@@ -42,6 +42,12 @@
 }
 
 :root {
+  --one:#edfdfe;
+  --two:#d1f9fc;
+  --three:#14738a;
+  --four:#195d71;
+  --five:#194e60;
+  --six:#05181f;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);
