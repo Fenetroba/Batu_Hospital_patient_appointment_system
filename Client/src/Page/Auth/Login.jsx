@@ -1,55 +1,44 @@
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Language from "@/Components/Language/Language";
+import { useLanguage } from '@/Context/LanguageContext';
 const Login = () => {
+  const { t } = useLanguage();
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-1/2 flex flex-col justify-center items-center h-[100vh] bg-[var(--six)]">
-        <h1 className="text-2xl font-bold text-white text-center">
-          {" "}
-          WELCOME TO BATU GENERAL HOSPITAL
+    <div className="flex flex-col md:flex-row justify-center items-center min-h-screen">
+      {/* Welcome Section */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center min-h-[40vh] md:h-[100vh] bg-[var(--six)] p-6 md:p-10">
+        <h1 className="text-xl md:text-2xl font-bold text-white text-center mb-4">
+          {t('welcomeMessage')}
         </h1>
-        <p className="text-white text-center mb-10 ">
-          Please login to continue
+        <p className="text-white text-center mb-6 md:mb-10">
+          {t('loginSubtitle')}
         </p>
-        <Select className="w-[180px] ">
-          <SelectTrigger style={{ color: "white" }}>
-            <SelectValue placeholder="LANGUAGE" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="english ">English</SelectItem>
-            <SelectItem value="malay">Amharic</SelectItem>
-            <SelectItem value="chinese">Afan Oromo</SelectItem>
-          </SelectContent>
-        </Select>
+        <Language/>
       </div>
-      <div className="w-1/2 h-[100vh] bg-[var(--two)]">
-        <div className="flex flex-col justify-center items-center h-[100vh]">
-          <div className="bg-[var(--six)] p-10 rounded-2xl">
-            <h1 className="text-2xl  font-bold text-white text-center">
-              LOGIN
+
+      {/* Login Form Section */}
+      <div className="w-full md:w-1/2 min-h-[60vh] md:h-[100vh] bg-[var(--two)] flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <div className="bg-[var(--six)] p-6 md:p-10 rounded-2xl w-full">
+            <h1 className="text-xl md:text-2xl font-bold text-white text-center">
+              {t('loginTitle')}
             </h1>
-            <p className="text-white text-center mb-10 ">
-              Please login to continue
+            <p className="text-white text-center mb-6 md:mb-10">
+              {t('loginSubtitle')}
             </p>
-            <form action="" className=" flex flex-col gap-4">
+            <form action="" className="flex flex-col gap-4">
               <input
                 type="text"
-                placeholder="Username"
-                className="border text-white border-gray-300 rounded-md p-2"
+                placeholder={t('username')}
+                className="border text-white bg-transparent border-gray-300 rounded-md p-2 md:p-3 focus:outline-none focus:ring-2 focus:ring-[var(--two)]"
               />
               <input
                 type="password"
-                placeholder="Password"
-                className="border text-white border-gray-300 rounded-md p-2"
+                placeholder={t('password')}
+                className="border text-white bg-transparent border-gray-300 rounded-md p-2 md:p-3 focus:outline-none focus:ring-2 focus:ring-[var(--two)]"
               />
-              <button type="submit" className="bg-[var(--two)] text-[var(--six)] rounded-md p-1 font-bold cursor-pointer">
-                Login
+              <button type="submit" className="bg-[var(--two)] text-[var(--six)] rounded-md p-2 md:p-3 font-bold cursor-pointer hover:opacity-90 transition-opacity">
+                {t('login')}
               </button>
             </form>
           </div>

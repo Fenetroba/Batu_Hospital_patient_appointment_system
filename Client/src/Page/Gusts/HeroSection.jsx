@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Users, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/Context/LanguageContext';
 
 const HeroSection = () => {
+  const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      title: "Welcome to Batu General Hospital",
-      subtitle: "Providing Quality Healthcare Services",
-      description: "Your health is our priority. We offer comprehensive medical care with state-of-the-art facilities.",
+      title: t('welcomeTitle'),
+      subtitle: t('welcomeSubtitle'),
+      description: t('welcomeDescription'),
      
       ctaLink: "/login",
       bgColor: "from-[var(--five)] to-[var(--four)]"
     },
     {
-      title: "24/7 Emergency Services",
-      subtitle: "Always Here When You Need Us",
-      description: "Our emergency department is open round the clock to provide immediate medical attention.",
+      title: t('emergencyTitle'),
+      subtitle: t('emergencySubtitle'),
+      description: t('emergencyDescription'),
     
       ctaLink: "/location",
       bgColor: "from-[var(--four)] to-[var(--three)]"
     },
     {
-      title: "Expert Medical Team",
-      subtitle: "Experienced Healthcare Professionals",
-      description: "Our team of specialists is dedicated to providing the best possible care for you and your family.",
+      title: t('teamTitle'),
+      subtitle: t('teamSubtitle'),
+      description: t('teamDescription'),
       
       ctaLink: "/team",
       bgColor: "from-[var(--three)] to-[var(--five)]"
@@ -137,17 +139,17 @@ const HeroSection = () => {
           <div className="bg-white/20 backdrop-blur-md rounded-lg p-4 text-center text-white">
             <Calendar className="w-8 h-8 mx-auto mb-2" />
             <p className="font-bold text-2xl">24/7</p>
-            <p className="text-sm">Emergency Care</p>
+            <p className="text-sm">{t('emergencyCare')}</p>
           </div>
           <div className="bg-white/20 backdrop-blur-md rounded-lg p-4 text-center text-white">
             <Users className="w-8 h-8 mx-auto mb-2" />
             <p className="font-bold text-2xl">50+</p>
-            <p className="text-sm">Expert Doctors</p>
+            <p className="text-sm">{t('expertDoctors')}</p>
           </div>
           <div className="bg-white/20 backdrop-blur-md rounded-lg p-4 text-center text-white">
             <Heart className="w-8 h-8 mx-auto mb-2" />
             <p className="font-bold text-2xl">10K+</p>
-            <p className="text-sm">Patients Served</p>
+            <p className="text-sm">{t('patientsServed')}</p>
           </div>
         </div>
       </div>

@@ -1,17 +1,25 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { useLanguage } from '@/Context/LanguageContext';
+import Language from '@/Components/Language/Language';
+import Header from './Gusts/Header';
+import Footer from './Gusts/Footer';
 
 const Location = () => {
+  const { t } = useLanguage();
   return (
+    <div>
+      <div className='bg-[var(--six)] h-[30px] flex justify-end items-center'><Language/></div>
+      <Header />
     <div className="min-h-screen bg-gradient-to-b from-[var(--one)] to-[var(--two)] py-12 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[var(--six)] mb-4">
-            Our Location
+            {t('ourLocation')}
           </h1>
           <p className="text-gray-600 text-lg">
-            Find us and get directions to Batu General Hospital
+            {t('findUs')}
           </p>
         </div>
 
@@ -42,7 +50,7 @@ const Location = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[var(--six)] mb-2">
-                    Address
+                    {t('address')}
                   </h3>
                   <p className="text-gray-600">
                     Batu General Hospital<br />
@@ -61,7 +69,7 @@ const Location = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[var(--six)] mb-2">
-                    Phone
+                    {t('phone')}
                   </h3>
                   <p className="text-gray-600">
                     Emergency: +251 22 XXX XXXX<br />
@@ -80,7 +88,7 @@ const Location = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[var(--six)] mb-2">
-                    Email
+                    {t('email')}
                   </h3>
                   <p className="text-gray-600">
                     info@batuhospital.et<br />
@@ -98,7 +106,7 @@ const Location = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[var(--six)] mb-2">
-                    Working Hours
+                    {t('workingHours')}
                   </h3>
                   <p className="text-gray-600">
                     Emergency: 24/7<br />
@@ -115,23 +123,23 @@ const Location = () => {
         {/* Directions Section */}
         <div className="mt-12 bg-[var(--six)] rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-[var(--one)] mb-6">
-            How to Get Here
+            {t('howToGetHere')}
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">By Car</h3>
+              <h3 className="font-bold text-[var(--five)] mb-2">{t('byCar')}</h3>
               <p className="text-gray-600">
                 Free parking available on-site. Follow signs to the main entrance.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">By Public Transport</h3>
+              <h3 className="font-bold text-[var(--five)] mb-2">{t('byPublicTransport')}</h3>
               <p className="text-gray-600">
                 Several bus routes stop near the hospital. Check local schedules.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">By Taxi</h3>
+              <h3 className="font-bold text-[var(--five)] mb-2">{t('byTaxi')}</h3>
               <p className="text-gray-600">
                 Taxis are readily available. Show the driver this address.
               </p>
@@ -140,7 +148,9 @@ const Location = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </div>
   );
 };
 
-export default Location;Location
+export default Location;

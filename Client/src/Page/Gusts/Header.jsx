@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useLanguage } from '@/Context/LanguageContext';
 
 const Header = () => {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -24,24 +26,24 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: 'Home', path: '#/' },
+    { name: t('home'), path: '/' },
     {
-      name: 'About Us',
+      name: t('aboutUs'),
       subItems: [
-        { name: 'Location', path: '/location' },
-        { name: 'Information', path: '/about' },
-        { name: 'Our Team', path: '/team' },
+        { name: t('location'), path: '/location' },
+        { name: t('information'), path: '/about' },
+        { name: t('ourTeam'), path: '/team' },
       ],
     },
     {
-      name: 'Our Services',
+      name: t('ourServices'),
       subItems: [
-        { name: 'Specialties', path: '#/services' },
-        { name: 'Appointments', path: '#/appointments' },
-        { name: 'Emergency', path: '#/emergency' },
+        { name: t('specialties'), path: '#/services' },
+        { name: t('appointments'), path: '#/appointments' },
+        { name: t('emergency'), path: '#/emergency' },
       ],
     },
-    { name: 'Contact', path: '/location' },
+    { name: t('contact'), path: '/location' },
   ];
 
 
@@ -112,7 +114,7 @@ const Header = () => {
 
             <div className="ml-4 flex items-center space-x-2">
               <Button variant="outline" asChild className='bg-[var(--six)] text-white'>
-               <Link to="/login">Login</Link>
+               <Link to="/login">{t('login')}</Link>
               </Button>
              
             </div>
@@ -188,7 +190,7 @@ const Header = () => {
               <div className="pt-4 space-y-2">
                 <Button variant="outline" className="w-full bg-[var(--six)] text-white" asChild>
                   <Link to="/login" onClick={handleNavClick}>
-                    Login
+                    {t('login')}
                   </Link>
                 </Button>
               </div>

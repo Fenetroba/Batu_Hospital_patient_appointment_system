@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { useLanguage } from '@/Context/LanguageContext';
 
 const Footer = () => {
+  const { t } = useLanguage();
   return (
     <footer className="mt-20 relative bg-[var(--six)] text-white overflow-hidden">
       {/* Background Pattern Overlay */}
@@ -25,7 +27,7 @@ const Footer = () => {
               BATU <span className="text-[var(--two)]">HOSPITAL</span>
             </h3>
             <p className="text-gray-300 mb-4">
-              Providing quality healthcare services to our community with compassion and excellence since 1990.
+              {t('aboutSection')}
             </p>
             <div className="flex gap-3">
               <a 
@@ -69,31 +71,31 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+            <h3 className="text-xl font-bold mb-4">{t('quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                  Home
+                  {t('home')}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                  About Us
+                  {t('aboutUs')}
                 </Link>
               </li>
               <li>
                 <Link to="/team" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                  Our Team
+                  {t('ourTeam')}
                 </Link>
               </li>
               <li>
                 <Link to="/location" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                  Location
+                  {t('location')}
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                  Book Appointment
+                  {t('appointments')}
                 </Link>
               </li>
             </ul>
@@ -101,20 +103,20 @@ const Footer = () => {
 
           {/* Services */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Our Services</h3>
+            <h3 className="text-xl font-bold mb-4">{t('services')}</h3>
             <ul className="space-y-2">
-              <li className="text-gray-300">Emergency Care</li>
-              <li className="text-gray-300">Outpatient Services</li>
-              <li className="text-gray-300">Laboratory</li>
-              <li className="text-gray-300">Radiology</li>
-              <li className="text-gray-300">Pharmacy</li>
-              <li className="text-gray-300">Surgery</li>
+              <li className="text-gray-300">{t('emergencyService')}</li>
+              <li className="text-gray-300">{t('outpatient')}</li>
+              <li className="text-gray-300">{t('laboratory')}</li>
+              <li className="text-gray-300">{t('radiology')}</li>
+              <li className="text-gray-300">{t('pharmacy')}</li>
+              <li className="text-gray-300">{t('surgery')}</li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+            <h3 className="text-xl font-bold mb-4">{t('contactUs')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[var(--two)] flex-shrink-0 mt-1" />
@@ -146,17 +148,17 @@ const Footer = () => {
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-300 text-sm text-center md:text-left">
-              &copy; {new Date().getFullYear()} Batu General Hospital. All rights reserved.
+              &copy; {new Date().getFullYear()} {t('copyright')}
             </p>
             <div className="flex gap-6 text-sm">
               <Link to="/privacy" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                Privacy Policy
+                {t('privacyPolicy')}
               </Link>
               <Link to="/terms" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                Terms of Service
+                {t('termsOfService')}
               </Link>
               <Link to="/contact" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                Contact
+                {t('contact')}
               </Link>
             </div>
           </div>
