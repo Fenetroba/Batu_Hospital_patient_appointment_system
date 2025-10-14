@@ -193,31 +193,7 @@ const OurService = () => {
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className='text-center mt-16'>
-          <div className='bg-gradient-to-r from-[var(--five)] to-[var(--four)] rounded-2xl p-8 md:p-12 shadow-xl'>
-            <h2 className='text-2xl md:text-3xl font-bold text-white mb-4'>
-              {t('emergencyTitle')}
-            </h2>
-            <p className='text-white/90 text-lg mb-6 max-w-2xl mx-auto'>
-              {t('emergencyDescription')}
-            </p>
-            <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
-              <a 
-                href='/login' 
-                className='bg-white text-[var(--six)] px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors shadow-lg'
-              >
-                {t('appointments')}
-              </a>
-              <a 
-                href='/location' 
-                className='bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-[var(--six)] transition-colors'
-              >
-                {t('contact')}
-              </a>
-            </div>
-          </div>
-        </div>
+       
       </div>
     </div>
   );

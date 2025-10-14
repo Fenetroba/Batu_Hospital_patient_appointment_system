@@ -4,6 +4,7 @@ import HeroSection from './HeroSection'
 import Footer from './Footer'
 import Language from '@/Components/Language/Language'
 import OurService from './OurService'
+import Impressions from './Impressions'
 
 const HomePage = () => {
   return (
@@ -12,6 +13,7 @@ const HomePage = () => {
         <Header/>
         <HeroSection/>
         <OurService/>
+        <Impressions/>
         <Footer/>
     </div>
   )
