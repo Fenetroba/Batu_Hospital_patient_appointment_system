@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom'
 import Location from './Page/Location'
 import DoctorsLayer from './Page/Doctors/Layer/DoctorsLayer'
 import Doctors from './Page/Doctors/HomePage'
+import AdminHome from './Page/Admin/Homepage'
 const App = () => {
   return (
    <div className='bg-gradient-to-b from-[var(--one)] to-[var(--two)] h-[100dvh]'>
@@ -17,6 +18,7 @@ const App = () => {
 
  
     <Route path='/doctors/home' element={<DoctorsLayer/>} />
+    <Route path='/admin/home' element={<AdminHome/>} />
    
   
 

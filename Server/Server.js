@@ -1,1 +1,13 @@
-console.log("hellow")
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+dotenv.config();
+import connectDB from "./DataBase/DataBase.js";
+import userRouter from "./Router/UserRegistration.Router.js";
+connectDB();
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use("/api/user", userRouter);
+app.use(express.urlencoded({ extended: true }));
+app.listen(3000, () => console.log("Server running on port 3000"));
