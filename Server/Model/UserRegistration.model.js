@@ -1,158 +1,127 @@
-import mysql from 'mysql2/promise';
-import 'dotenv/config'
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+const userRegistrationSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    role: {
+        type: String,
+        enum: ['Patient', 'Doctor', 'Admin', 'Nurse', 'Receptionist'],
+        default: 'Patient'
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    profileImage: {
+        type: String,
+        default: ''
+    },
+    // Patient specific fields
+    gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Other'],
+        default: ''
+    },
+    age: {
+        type: Number,
+        default: null
+    },
+    bloodGroup: {
+        type: String,
+        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+        default: ''
+    },
+    // Doctor specific fields
+    speciality: {
+        type: String,
+        default: ''
+    },
+    doctorLicense: {
+        type: String,
+        default: ''
+    },
+    experience: {
+        type: Number,
+        default: null
+    },
+    // Nurse specific fields
+    nurseLicense: {
+        type: String,
+        default: ''
+    },
+    shift: {
+        type: String,
+        enum: ['Morning', 'Evening', 'Night', 'Rotating'],
+        default: ''
+    },
+    // Receptionist specific fields
+    department: {
+        type: String,
+        default: ''
+    },
+    workingHours: {
+        type: String,
+        enum: ['Full-time', 'Part-time', 'Flexible'],
+        default: ''
+    }
+}, {
+    timestamps: true
 });
 
-class UserRegistrationModel {
+// Hash password before saving
+userRegistrationSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
 
-    // Create user (equivalent to mongoose create)
-    static async create(userData) {
-        try {
-            const {
-                fullName,
-                email,
-                password,
-                role = 'Patient',
-                profileImage = '',
-                speciality = '',
-                address = '',
-                phone = '',
-                gender = '',
-                age = '',
-                bloodGroup = ''
-            } = userData;
-
-            const query = `
-                INSERT INTO userregistrations
-                (fullName, email, password, role, profileImage, speciality, address, phone, gender, age, bloodGroup, createdAt, updatedAt)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-            `;
-
-            const [result] = await pool.execute(query, [
-                fullName, email, password, role, profileImage, speciality,
-                address, phone, gender, age, bloodGroup
-            ]);
-
-            // Fetch the created user
-            const [users] = await pool.execute(
-                'SELECT * FROM userregistrations WHERE id = ?',
-                [result.insertId]
-            );
-
-            return users[0];
-        } catch (error) {
-            throw error;
-        }
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
     }
+});
 
-    // Find all users (equivalent to mongoose find)
-    static async find(filter = {}) {
-        try {
-            let query = 'SELECT * FROM userregistrations';
-            let params = [];
+// Simple static methods
+userRegistrationSchema.statics.createUser = async function(userData) {
+    const user = new this(userData);
+    return await user.save();
+};
 
-            if (Object.keys(filter).length > 0) {
-                const conditions = Object.keys(filter).map(key => `${key} = ?`);
-                query += ` WHERE ${conditions.join(' AND ')}`;
-                params = Object.values(filter);
-            }
+userRegistrationSchema.statics.getUsers = async function() {
+    return await this.find().sort({ createdAt: -1 });
+};
 
-            query += ' ORDER BY createdAt DESC';
+userRegistrationSchema.statics.getUserById = async function(id) {
+    return await this.findById(id);
+};
 
-            const [users] = await pool.execute(query, params);
-            return users;
-        } catch (error) {
-            throw error;
-        }
-    }
+userRegistrationSchema.statics.updateUser = async function(id, updates) {
+    return await this.findByIdAndUpdate(id, updates, { new: true });
+};
 
-    // Find one user (equivalent to mongoose findOne)
-    static async findOne(filter) {
-        try {
-            const conditions = Object.keys(filter).map(key => `${key} = ?`);
-            const query = `SELECT * FROM userregistrations WHERE ${conditions.join(' AND ')} LIMIT 1`;
-            const params = Object.values(filter);
+userRegistrationSchema.statics.deleteUser = async function(id) {
+    return await this.findByIdAndDelete(id);
+};
 
-            const [users] = await pool.execute(query, params);
-            return users[0] || null;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Find by ID (equivalent to mongoose findById)
-    static async findById(id) {
-        try {
-            const [users] = await pool.execute(
-                'SELECT * FROM userregistrations WHERE id = ?',
-                [id]
-            );
-            return users[0] || null;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Update user (equivalent to mongoose findByIdAndUpdate)
-    static async findByIdAndUpdate(id, updates, options = {}) {
-        try {
-            // Build update query
-            const updateFields = Object.keys(updates).map(key => `${key} = ?`);
-            const query = `UPDATE userregistrations SET ${updateFields.join(', ')}, updatedAt = NOW() WHERE id = ?`;
-            const params = [...Object.values(updates), id];
-
-            await pool.execute(query, params);
-
-            // Return updated user if requested
-            if (options.new) {
-                return await this.findById(id);
-            }
-
-            return { id, ...updates };
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Delete user (equivalent to mongoose findByIdAndDelete)
-    static async findByIdAndDelete(id) {
-        try {
-            const user = await this.findById(id);
-            if (!user) return null;
-
-            await pool.execute('DELETE FROM userregistrations WHERE id = ?', [id]);
-            return user;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Count users (equivalent to mongoose countDocuments)
-    static async countDocuments(filter = {}) {
-        try {
-            let query = 'SELECT COUNT(*) as count FROM userregistrations';
-            let params = [];
-
-            if (Object.keys(filter).length > 0) {
-                const conditions = Object.keys(filter).map(key => `${key} = ?`);
-                query += ` WHERE ${conditions.join(' AND ')}`;
-                params = Object.values(filter);
-            }
-
-            const [result] = await pool.execute(query, params);
-            return result[0].count;
-        } catch (error) {
-            throw error;
-        }
-    }
-}
+const UserRegistrationModel = mongoose.model('UserRegistration', userRegistrationSchema);
 
 export default UserRegistrationModel;

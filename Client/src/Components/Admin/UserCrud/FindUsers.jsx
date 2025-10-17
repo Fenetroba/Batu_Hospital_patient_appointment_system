@@ -113,12 +113,16 @@ const FindUsers = ({ onClose, users, onSelectUser }) => {
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium text-gray-600">
-                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        {user.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'N/A'}
                       </span>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">{user.name}</p>
+                      <p className="font-semibold text-gray-800">{user.name || user.fullName || 'No Name'}</p>
                       <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="text-sm text-gray-600">{user.phone}</p>
+                      <p className="text-sm text-gray-600">{user.address}</p>
+                      <p className="text-sm text-gray-600">Age: {user.age || 'N/A'} | Gender: {user.gender || 'N/A'} | Blood: {user.bloodGroup || 'N/A'}</p>
+                      {user.speciality && <p className="text-sm text-gray-600">Speciality: {user.speciality}</p>}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

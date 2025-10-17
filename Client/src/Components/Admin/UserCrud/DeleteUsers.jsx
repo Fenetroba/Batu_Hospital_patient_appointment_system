@@ -6,8 +6,8 @@ const DeleteUsers = ({ onClose, users, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   const handleSelectUser = (userId) => {

@@ -4,7 +4,8 @@ import axiosInstance from "../Lib/Axios";
 const initialState = {
     users: [],
     loading: false,
-    error: null
+    error: null,
+    currentUser: null // Add current user state
 }
 
 const userSlice = createSlice({
@@ -13,6 +14,9 @@ const userSlice = createSlice({
     reducers: {
         setUsers: (state, action) => {
             state.users = action.payload    
+        },
+        setCurrentUser: (state, action) => {
+            state.currentUser = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -90,5 +94,5 @@ export const DeleteUser = createAsyncThunk("user/deleteUser", async (id) => {
     return id; // Return the id to use in the reducer
 });
 
-export const { setUsers } = userSlice.actions;
+export const { setUsers, setCurrentUser } = userSlice.actions;
 export default userSlice.reducer;

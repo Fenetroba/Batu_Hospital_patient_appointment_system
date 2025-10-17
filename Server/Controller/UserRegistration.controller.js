@@ -14,13 +14,65 @@ export const registerUser = async (req, res) => {
       phone,
       gender,
       age,
-      bloodGroup
+      bloodGroup,
+      // Doctor specific fields
+      doctorLicense,
+      experience,
+      // Nurse specific fields
+      nurseLicense,
+      shift,
+      // Receptionist specific fields
+      department,
+      workingHours
     } = req.body;
 
-    // Basic validation
+    // Role-based authorization check
+    // For now, we'll assume the current user role is passed in the request
+    // In a real app, you'd get this from JWT token or session
+    const currentUserRole = req.user?.role || 'Admin'; // Default to Admin for testing
+
+    // Check if current user is authorized to create the requested role
+    if (currentUserRole === 'Receptionist' && role !== 'Patient') {
+      return res.status(403).json({
+        message: "Receptionists can only create Patient users"
+      });
+    }
+
+    if (currentUserRole === 'Admin' && role === 'Patient') {
+      return res.status(403).json({
+        message: "Admins cannot create Patient users. Only Receptionists can create Patients."
+      });
+    }
+
+    // Role-specific validation
     if (!fullName || !email || !password || !role) {
       return res.status(400).json({
-        message: "Required fields missing: fullName, email, password, and role are required"
+        message: "Basic fields missing: fullName, email, password, and role are required"
+      });
+    }
+
+    // Validate role-specific fields
+    if (role === 'Patient' && (!address || !phone)) {
+      return res.status(400).json({
+        message: "Patient fields missing: address and phone are required"
+      });
+    }
+
+    if (role === 'Doctor' && (!speciality || !doctorLicense || !experience || !address || !phone)) {
+      return res.status(400).json({
+        message: "Doctor fields missing: speciality, doctorLicense, experience, address, and phone are required"
+      });
+    }
+
+    if (role === 'Nurse' && (!nurseLicense || !shift || !address || !phone)) {
+      return res.status(400).json({
+        message: "Nurse fields missing: nurseLicense, shift, address, and phone are required"
+      });
+    }
+
+    if (role === 'Receptionist' && (!department || !workingHours || !address || !phone)) {
+      return res.status(400).json({
+        message: "Receptionist fields missing: department, workingHours, address, and phone are required"
       });
     }
 
@@ -32,23 +84,23 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    // Hash password for security
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create user with hashed password
-    const user = await UserRegistrationSchema.create({
+    // Create user (password will be hashed automatically by the model)
+    const user = await UserRegistrationSchema.createUser({
       fullName,
       email,
-      password: hashedPassword,
+      password, // No need to hash here anymore
       role,
       profileImage,
       speciality,
       address,
       phone,
       gender,
-      age,
-      bloodGroup
+      age: age ? Number(age) : null, // Convert age to number
+      bloodGroup,
+      // Role-specific fields
+      ...(role === 'Doctor' && { doctorLicense, experience: experience ? Number(experience) : null }),
+      ...(role === 'Nurse' && { nurseLicense, shift }),
+      ...(role === 'Receptionist' && { department, workingHours })
     });
 
     // Remove password from response for security
@@ -97,11 +149,10 @@ export const registerUser = async (req, res) => {
     });
   }
 }
-
 // Get all users (Read)
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserRegistrationSchema.find({});
+    const users = await UserRegistrationSchema.getUsers();
 
     res.status(200).json({
       message: "Users retrieved successfully",
@@ -122,7 +173,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await UserRegistrationSchema.findById(id);
+    const user = await UserRegistrationSchema.getUserById(id);
 
     if (!user) {
       return res.status(404).json({
@@ -160,10 +211,9 @@ export const updateUser = async (req, res) => {
     // Remove password from updates if present (password should be updated separately)
     delete updates.password;
 
-    const user = await UserRegistrationSchema.findByIdAndUpdate(
+    const user = await UserRegistrationSchema.updateUser(
       id,
-      { ...updates, updatedAt: new Date() },
-      { new: true }
+      { ...updates, updatedAt: new Date() }
     );
 
     if (!user) {
@@ -198,7 +248,7 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await UserRegistrationSchema.findByIdAndDelete(id);
+    const user = await UserRegistrationSchema.deleteUser(id);
 
     if (!user) {
       return res.status(404).json({

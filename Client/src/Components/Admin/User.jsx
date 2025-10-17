@@ -4,22 +4,33 @@ import { Users, UserPlus, UserCheck, Shield, Search, Trash2 } from 'lucide-react
 import CreateUser from './UserCrud/CreateUser'
 import DeleteUsers from './UserCrud/DeleteUsers'
 import FindUsers from './UserCrud/FindUsers'
-import { CreateUser as CreateUserAction, fetchUsers, UpdateUser, DeleteUser } from '../../Stores/UserSlice'
+import { CreateUser as CreateUserAction, fetchUsers, UpdateUser, DeleteUser, setCurrentUser } from '../../Stores/UserSlice'
 
 const User = () => {
   const dispatch = useDispatch()
-  const { users, loading, error } = useSelector((state) => state.user)
+  const { users, loading, error, currentUser } = useSelector((state) => state.user)
 
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showFindModal, setShowFindModal] = useState(false)
+
+  // Set current user (for demo purposes, you would get this from authentication)
+  useEffect(() => {
+    // For demo purposes, set current user as Admin
+    // In a real app, this would come from authentication
+    dispatch(setCurrentUser({ role: 'Admin' }))
+  }, [dispatch])
+
+  const handleRoleSwitch = (newRole) => {
+    dispatch(setCurrentUser({ role: newRole }))
+  }
 
   // Fetch users when component mounts
   useEffect(() => {
     dispatch(fetchUsers())
   }, [dispatch])
 
-  // Calculate stats from Redux state
+  // Calculate stats from Redux stategf
   const stats = [
     { label: 'Total Users', value: users.length.toString(), icon: Users, color: 'bg-blue-500' },
     { label: 'Active Users', value: users.filter(u => u.status === 'Active').length.toString(), icon: UserCheck, color: 'bg-green-500' },
@@ -59,7 +70,7 @@ const User = () => {
     return (
       <div className="p-6">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--six)]"></div>
         </div>
       </div>
     )
@@ -83,7 +94,36 @@ const User = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-[var(--six)]">Users Management</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-[var(--six)]">Users Management</h1>
+
+        {/* Role Switcher for Testing */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">Current Role:</span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => handleRoleSwitch('Admin')}
+              className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                currentUser?.role === 'Admin'
+                  ? 'bg-purple-500 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Admin
+            </button>
+            <button
+              onClick={() => handleRoleSwitch('Receptionist')}
+              className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                currentUser?.role === 'Receptionist'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Receptionist
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat) => (
@@ -101,9 +141,9 @@ const User = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-semibold">All Users</h2>
+      <div className="bg-[var(--one)] text-white rounded-lg shadow ">
+        <div className="p-4 bg-[var(--six)] border-b flex items-center justify-between">
+          <h2 className="text-lg font-semibold ">All Users</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowFindModal(true)}
