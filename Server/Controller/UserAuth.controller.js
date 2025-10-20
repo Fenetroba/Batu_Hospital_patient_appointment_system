@@ -1,80 +1,109 @@
-import UserAuthSchema from "../Model/UserAuth.model.js";
-import { authenticateToken, authorizeRole } from '../Middelware/Protector.js';
+import User from "../Model/UserRegistration.model.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-// Enhanced login function
+/**
+ * @description Authenticate user and get token
+ * @route POST /api/auth/login
+ * @access Public
+ */
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+    
         // Validate input
         if (!email || !password) {
-            return res.status(400).json({success:false,
+            return res.status(400).json({
+                success: false,
                 message: "Email and password are required"
             });
         }
 
         // Find user by email
-        const user = await UserAuthSchema.findOne({ email });
+        const user = await User.findOne({ email }).select('+password');
+        
         if (!user) {
-            return res.status(404).json({success:false,
-                message: "User not found"
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
             });
         }
 
         // Check if user is active
         if (!user.isActive) {
-            return res.status(403).json({success:false,
-                message: "Account is deactivated"
+            return res.status(403).json({
+                success: false,
+                message: "Account is deactivated. Please contact support."
             });
         }
 
-        // Compare password using model's method
-        const isPasswordValid = await user.comparePassword(password);
-        if (!isPasswordValid) {
-            return res.status(401).json({success:false,
-                message: "Invalid password"
+        // Compare password
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
             });
         }
 
         // Update last login
         user.lastLogin = new Date();
-        await user.save();
+        await user.save({ validateBeforeSave: false });
+
+        // Create token payload
+        const payload = {
+            id: user._id,
+            email: user.email,
+            role: user.role
+        };
 
         // Generate JWT token
         const token = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-                role: user.role
-            },
-            process.env.JWT_SECRET ,
-            { expiresIn: '7d' }
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRE || '7d' }
         );
 
-        // Return user data without password
+        // Set cookie options
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Use secure in production
+            sameSite: 'lax', // Changed from 'strict' to 'lax' for better cross-site compatibility
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : undefined // Set your domain in production
+        };
+
+        // Set the cookie in the response
+        res.cookie('token', token, cookieOptions);
+
+        // Remove password from response
         const userResponse = {
             id: user._id,
             email: user.email,
+            fullName: user.fullName,
             role: user.role,
             isActive: user.isActive,
             lastLogin: user.lastLogin
         };
 
-        res.status(200).json({success:true,
+        res.status(200).json({
+            success: true,
             message: "Login successful",
-            user: userResponse,
-            token
+            user: userResponse
         });
 
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({success:false,
-            message: "Internal server error",
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+        res.status(500).json({
+            success: false,
+            message: "An error occurred during login",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
+
+
 

@@ -5,11 +5,11 @@ import { loginUser } from '../../Stores/UserAuthslicer';
 import { toast } from "sonner";
 import Language from '@/Components/Language/Language';
 
-const Login = () => {
+const Login = ({user,isAuthenticated}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {currentUser, isLoading, error} = useSelector((state) => state.auth);
+  const { isLoading} = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields')
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -41,20 +41,24 @@ const Login = () => {
         });
 
         // Navigate based on user role
-        const userRole = result.payload.currentUser?.role;
-        if (userRole === 'Admin') {
-          navigate('/admin');
-        } else if (userRole === 'Patient') {
-          navigate('/patient');
-        } else if (userRole === 'Doctor') {
-          navigate('/doctor');
-        } else if (userRole === 'Nurse') {
-          navigate('/nurse');
-        } else if (userRole === 'Receptionist') {
-          navigate('/receptionist');
-        } else {
-          navigate('/dashboard'); // Fallback
+        const userRole = result.payload.user?.role;
+        console.log('User role after login:', userRole);
+        
+        // Store user data in local storage if needed
+        if (result.payload.user) {
+          localStorage.setItem('user', JSON.stringify(result.payload.user));
         }
+
+        // Navigate based on user role
+        const roleRoutes = {
+          'Admin': '/admin/home',
+          'Patient': '/patient/home',
+          'Doctor': '/doctor/home',
+          'Nurse': '/nurse/home',
+          'Receptionist': '/receptionist'
+        };
+
+        navigate(roleRoutes[userRole] || '/dashboard');
       } else {
         // Error: Display error message from backend
         const errorMessage = result.payload?.message || result.error?.message || 'Login failed';
@@ -107,7 +111,7 @@ const Login = () => {
                 name="password"
                 placeholder="Password"
                 value={formData.password}
-                onChange={handleChange}
+                 onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 className="border text-white bg-transparent border-gray-300 rounded-md p-2 md:p-3 focus:outline-none focus:ring-2 focus:ring-[var(--two)]"
                 required
               />

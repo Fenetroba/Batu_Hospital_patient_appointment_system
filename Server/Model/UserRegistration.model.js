@@ -38,8 +38,8 @@ const userRegistrationSchema = new mongoose.Schema({
     // Patient specific fields
     gender: {
         type: String,
-        enum: ['Male', 'Female', 'Other'],
-        default: ''
+        enum: ['Male', 'Female', null],
+        default: null
     },
     age: {
         type: Number,
@@ -47,8 +47,8 @@ const userRegistrationSchema = new mongoose.Schema({
     },
     bloodGroup: {
         type: String,
-        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-        default: ''
+        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', null],
+        default: null
     },
     // Doctor specific fields
     speciality: {
@@ -80,8 +80,12 @@ const userRegistrationSchema = new mongoose.Schema({
     },
     workingHours: {
         type: String,
-        enum: ['Full-time', 'Part-time', 'Flexible'],
-        default: ''
+        enum: ['Full-time', 'Part-time', 'Flexible', null],
+        default: null
+    },
+       isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
@@ -121,7 +125,15 @@ userRegistrationSchema.statics.updateUser = async function(id, updates) {
 userRegistrationSchema.statics.deleteUser = async function(id) {
     return await this.findByIdAndDelete(id);
 };
+// Method to compare password
+userRegistrationSchema.methods.comparePassword = async function(candidatePassword) {
+    try {
+        return await bcrypt.compare(candidatePassword, this.password);
+    } catch (error) {
+        throw new Error('Error comparing passwords');
+    }
+};
 
-const UserRegistrationModel = mongoose.model('UserRegistration', userRegistrationSchema);
+const UserRegistration = mongoose.model('UserRegistration', userRegistrationSchema);
 
-export default UserRegistrationModel;
+export default UserRegistration;

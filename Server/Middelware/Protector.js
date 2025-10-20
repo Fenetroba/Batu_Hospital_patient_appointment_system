@@ -2,16 +2,41 @@ import jwt from 'jsonwebtoken';
 
 // Middleware to verify JWT token
 export const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    // Try to get token from cookies first
+    const token = req.cookies?.token;
 
     if (!token) {
-        return res.status(401).json({ message: 'Access token required' });
+        // If not in cookies, try Authorization header (for backward compatibility)
+        const authHeader = req.headers['authorization'];
+        const authToken = authHeader && authHeader.split(' ')[1];
+        
+        if (!authToken) {
+            return res.status(401).json({ 
+                success: false,
+                message: 'Access token required' 
+            });
+        }
+        
+        // Verify the token from header
+        return jwt.verify(authToken, process.env.JWT_SECRET, (err, user) => {
+            if (err) {
+                return res.status(403).json({ 
+                    success: false,
+                    message: 'Invalid or expired token' 
+                });
+            }
+            req.user = user;
+            next();
+        });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
+    // Verify the token from cookie
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ message: 'Invalid or expired token' });
+            return res.status(403).json({ 
+                success: false,
+                message: 'Invalid or expired token' 
+            });
         }
         req.user = user;
         next();

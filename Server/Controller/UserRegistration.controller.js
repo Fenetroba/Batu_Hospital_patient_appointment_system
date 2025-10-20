@@ -84,24 +84,30 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    // Create user (password will be hashed automatically by the model)
-    const user = await UserRegistrationSchema.createUser({
+    // Convert empty strings to null for optional fields
+    const sanitizedData = {
       fullName,
       email,
-      password, // No need to hash here anymore
+      password, // Will be hashed by the pre-save hook
       role,
-      profileImage,
-      speciality,
+      profileImage: profileImage || null,
+      speciality: speciality || null,
       address,
       phone,
-      gender,
-      age: age ? Number(age) : null, // Convert age to number
-      bloodGroup,
+      gender: gender || null,
+      age: age ? Number(age) : null,
+      bloodGroup: bloodGroup || null,
       // Role-specific fields
-      ...(role === 'Doctor' && { doctorLicense, experience: experience ? Number(experience) : null }),
-      ...(role === 'Nurse' && { nurseLicense, shift }),
-      ...(role === 'Receptionist' && { department, workingHours })
-    });
+      doctorLicense: doctorLicense || null,
+      experience: experience ? Number(experience) : null,
+      nurseLicense: nurseLicense || null,
+      shift: shift || null,
+      department: department || null,
+      workingHours: workingHours || null
+    };
+
+    // Create user with sanitized data
+    const user = await UserRegistrationSchema.createUser(sanitizedData);
 
     // Remove password from response for security
     const userResponse = {
@@ -244,6 +250,51 @@ export const updateUser = async (req, res) => {
 }
 
 // Delete user (Delete)
+// Update user status (Active/Inactive)
+export const updateUserStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isActive } = req.body;
+
+    const user = await UserRegistrationSchema.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Remove sensitive data before sending response
+    const { password: _, ...userWithoutPassword } = user.toObject();
+
+    res.status(200).json({
+      success: true,
+      message: 'User status updated successfully',
+      user: userWithoutPassword
+    });
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;

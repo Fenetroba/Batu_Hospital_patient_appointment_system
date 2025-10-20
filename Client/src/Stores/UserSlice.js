@@ -51,9 +51,12 @@ const userSlice = createSlice({
             })
             .addCase(UpdateUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users = state.users.map(user =>
-                    user.id === action.payload.user.id ? action.payload.user : user
-                );
+                if (action.payload?.user?._id) {
+                    const updatedUser = action.payload.user;
+                    state.users = state.users.map(user =>
+                        user._id === updatedUser._id ? { ...user, ...updatedUser } : user
+                    );
+                }
             })
             .addCase(UpdateUser.rejected, (state, action) => {
                 state.loading = false;
@@ -65,7 +68,9 @@ const userSlice = createSlice({
             })
             .addCase(DeleteUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users = state.users.filter(user => user.id !== action.payload.id);
+                // Handle both object and direct ID payloads for backward compatibility
+                const deletedId = action.payload?.id || action.payload;
+                state.users = state.users.filter(user => user._id !== deletedId);
             })
             .addCase(DeleteUser.rejected, (state, action) => {
                 state.loading = false;
@@ -84,15 +89,60 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
     return response.data;
 });
 
-export const UpdateUser = createAsyncThunk("user/updateUser", async ({ id, userData }) => {
-    const response = await axiosInstance.put(`/${id}`, userData);
-    return response.data;
-});
+export const fetchUserById = createAsyncThunk(
+  "user/fetchUserById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/${userId}`);
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to fetch user";
+      return rejectWithValue({ message });
+    }
+  }
+);
 
-export const DeleteUser = createAsyncThunk("user/deleteUser", async (id) => {
-    await axiosInstance.delete(`/${id}`);
-    return id; // Return the id to use in the reducer
-});
+// Update user status (isActive)
+export const UpdateUser = createAsyncThunk(
+  "user/updateUser", 
+  async ({ id, userData }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/${id}/status`, 
+        { isActive: userData.isActive }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to update user status";
+      return rejectWithValue({ message });
+    }
+  }
+);
+
+export const DeleteUser = createAsyncThunk(
+  "user/deleteUser", 
+  async (id, { rejectWithValue }) => {
+    try {
+      if (!id) {
+        throw new Error("User ID is required for deletion");
+      }
+      
+      const response = await axiosInstance.delete(`/${id}`);
+      
+      // If we have a success message in the response, treat it as success
+      if (response.data.success || response.data.message) {
+        return { id };
+      }
+      
+      // If we get here, the response didn't have the expected format
+      throw new Error("Unexpected response from server");
+    } catch (error) {
+      console.error('Delete user error:', error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to delete user";
+      return rejectWithValue({ message: errorMessage });
+    }
+  }
+);
 
 export const { setUsers, setCurrentUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -26,10 +26,6 @@ const UserAuthSchema = new mongoose.Schema({
         default: 'Patient',
         required: true
     },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
     lastLogin: {
         type: Date,
         default: null
@@ -43,21 +39,6 @@ UserAuthSchema.index({ email: 1 });
 UserAuthSchema.index({ role: 1 });
 
 // Hash password before saving
-UserAuthSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
 
-    try {
-        const saltRounds = 10;
-        this.password = await bcrypt.hash(this.password, saltRounds);
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
-
-// Method to compare password
-UserAuthSchema.methods.comparePassword = async function(candidatePassword) {
-    return bcrypt.compare(candidatePassword, this.password);
-};
 
 export default mongoose.model("UserAuth", UserAuthSchema);

@@ -1,10 +1,14 @@
 import React from 'react'
 import { Users, Calendar, FileText, Activity } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
 const AdminHome = () => {
+  const { users } = useSelector((state) => state.user)
+  const { appointments } = useSelector((state) => state.appointments)
+console.log(appointments)
   const stats = [
-    { title: 'Total Users', value: '1,234', icon: Users, color: 'bg-blue-500' },
-    { title: 'Appointments', value: '567', icon: Calendar, color: 'bg-green-500' },
+    { title: 'Total Users', value: users.length.toString(), icon: Users, color: 'bg-blue-500' },
+    { title: 'Appointments', value: appointments.length.toString(), icon: Calendar, color: 'bg-green-500' },
     { title: 'Reports', value: '89', icon: FileText, color: 'bg-purple-500' },
     { title: 'Active Now', value: '42', icon: Activity, color: 'bg-orange-500' }
   ]
