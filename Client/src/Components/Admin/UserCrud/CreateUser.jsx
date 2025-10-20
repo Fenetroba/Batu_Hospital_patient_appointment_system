@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { X, User, Stethoscope, UserCheck, Building2, Shield } from 'lucide-react'
+import { X } from 'lucide-react'
+import RoleSelector from './CreateForm/RoleSelector'
+import BasicInfoForm from './CreateForm/BasicInfoForm'
+import PatientForm from './CreateForm/PatientForm'
+import DoctorForm from './CreateForm/DoctorForm'
+import NurseForm from './CreateForm/NurseForm'
+import ReceptionistForm from './CreateForm/ReceptionistForm'
 
 const CreateUser = ({ onClose, onSubmit }) => {
   const { currentUser } = useSelector((state) => state.user)
@@ -78,29 +84,6 @@ const CreateUser = ({ onClose, onSubmit }) => {
     onClose()
   }
 
-  // Role options based on current user's role
-  const getRoleOptions = () => {
-    if (!currentUser) return []
-
-    switch (currentUser.role) {
-      case 'Admin':
-        return [
-          { id: 'Doctor', label: 'Doctor', icon: Stethoscope, color: 'bg-blue-500' },
-          { id: 'Nurse', label: 'Nurse', icon: UserCheck, color: 'bg-green-500' },
-          { id: 'Receptionist', label: 'Receptionist', icon: Building2, color: 'bg-orange-500' },
-          { id: 'Admin', label: 'Admin', icon: Shield, color: 'bg-purple-500' }
-        ]
-      case 'Receptionist':
-        return [
-          { id: 'Patient', label: 'Patient', icon: User, color: 'bg-purple-500' }
-        ]
-      default:
-        return []
-    }
-  }
-
-  const roleOptions = getRoleOptions()
-
   return (
     <div className="fixed inset-0 backdrop-blur-lg bg-opacity-20 flex items-center justify-center z-50 p-4">
       <div className="bg-[var(--six)] rounded-xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -116,301 +99,45 @@ const CreateUser = ({ onClose, onSubmit }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Role Selection */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-              Select User Role
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {roleOptions.map((role) => {
-                const Icon = role.icon
-                return (
-                  <button
-                    key={role.id}
-                    type="button"
-                    onClick={() => handleRoleSelect(role.id)}
-                    className={`p-4 rounded-lg border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
-                      selectedRole === role.id
-                        ? `${role.color} border-white text-white shadow-lg scale-105`
-                        : 'border-white/30 text-white/70 hover:border-white/50 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <Icon size={24} />
-                    <span className="font-medium">{role.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+          <RoleSelector
+            currentUser={currentUser}
+            selectedRole={selectedRole}
+            onRoleSelect={handleRoleSelect}
+          />
 
           {/* Basic Information (Always Visible) */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-              Basic Information
-            </h3>
+          <BasicInfoForm
+            formData={formData}
+            onChange={handleChange}
+          />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                  placeholder="Enter full name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Email Address *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                  placeholder="Enter email address"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Password *</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                  placeholder="Enter password"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Phone Number *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                  placeholder="Enter phone number"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-white mb-2">Address *</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                placeholder="Enter full address"
-              />
-            </div>
-          </div>
-
-          {/* Medical Information (For Patients) */}
+          {/* Role-specific Forms */}
           {selectedRole === 'Patient' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-                Medical Information (Patient)
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Gender *</label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white bg-[var(--three)] border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Age *</label>
-                  <input
-                    type="number"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleChange}
-                    required
-                    min="1"
-                    max="150"
-                    className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                    placeholder="Enter age"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Blood Group *</label>
-                  <select
-                    name="bloodGroup"
-                    value={formData.bloodGroup}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white bg-[var(--three)] border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select Blood Group</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <PatientForm
+              formData={formData}
+              onChange={handleChange}
+            />
           )}
 
-          {/* Doctor Information */}
           {selectedRole === 'Doctor' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-                Doctor Information
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Speciality *</label>
-                  <input
-                    type="text"
-                    name="speciality"
-                    value={formData.speciality}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                    placeholder="e.g., Cardiology, Pediatrics"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Doctor License Number *</label>
-                  <input
-                    type="text"
-                    name="doctorLicense"
-                    value={formData.doctorLicense}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                    placeholder="Enter license number"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Years of Experience *</label>
-                <input
-                  type="number"
-                  name="experience"
-                  value={formData.experience}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                  placeholder="Enter years of experience"
-                />
-              </div>
-            </div>
+            <DoctorForm
+              formData={formData}
+              onChange={handleChange}
+            />
           )}
 
-          {/* Nurse Information */}
           {selectedRole === 'Nurse' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-                Nurse Information
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Nurse License Number *</label>
-                  <input
-                    type="text"
-                    name="nurseLicense"
-                    value={formData.nurseLicense}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                    placeholder="Enter license number"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Work Shift *</label>
-                  <select
-                    name="shift"
-                    value={formData.shift}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white bg-[var(--three)] border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select Shift</option>
-                    <option value="Morning">Morning (8 AM - 4 PM)</option>
-                    <option value="Evening">Evening (4 PM - 12 AM)</option>
-                    <option value="Night">Night (12 AM - 8 AM)</option>
-                    <option value="Rotating">Rotating</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <NurseForm
+              formData={formData}
+              onChange={handleChange}
+            />
           )}
 
-          {/* Receptionist Information */}
           {selectedRole === 'Receptionist' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white border-b border-white/20 pb-2">
-                Receptionist Information
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Department *</label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-                    placeholder="e.g., Front Desk, Emergency"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">Working Hours *</label>
-                  <select
-                    name="workingHours"
-                    value={formData.workingHours}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border text-white bg-[var(--three)] border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select Hours</option>
-                    <option value="Full-time">Full-time (40 hours/week)</option>
-                    <option value="Part-time">Part-time (20-30 hours/week)</option>
-                    <option value="Flexible">Flexible Schedule</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <ReceptionistForm
+              formData={formData}
+              onChange={handleChange}
+            />
           )}
 
           {/* Profile Image (Optional for all roles) */}
