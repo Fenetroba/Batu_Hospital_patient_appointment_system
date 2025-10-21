@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { profile } from "./Stores/UserAuthslicer";
 import PageProtector from "./Components/AllUsers/PageProtecter";
 import DoctorHomePage from "./Page/Doctors/HomePage";
+import Profile from "./Components/AllUsers/Profile";
+import Setting from "./Components/AllUsers/Setting";
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import("./Page/Gusts/HomePage"));
@@ -22,7 +24,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(profile());
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="bg-gradient-to-b from-[var(--one)] to-[var(--two)] min-h-screen">
@@ -83,6 +85,22 @@ const App = () => {
             element={
               <PageProtector allowedRoles={['Patient']}>
                 <PatientsHomePage />
+              </PageProtector>
+            }
+          />
+           <Route
+    path="/profile"
+    element={
+      <PageProtector allowedRoles={['Doctor', 'Nurse', 'Patient', 'Admin', 'Receptionist']}>
+        <Profile />
+      </PageProtector>
+    }
+  />
+          <Route
+            path="/settings"
+            element={
+              <PageProtector allowedRoles={['Doctor', 'Nurse', 'Patient', 'Admin', 'Receptionist']}>
+                <Setting />
               </PageProtector>
             }
           />

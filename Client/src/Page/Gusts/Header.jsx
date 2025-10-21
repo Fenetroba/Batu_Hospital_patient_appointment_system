@@ -159,7 +159,7 @@ const Header = ({ currentUser, isAuth }) => {
                   </PopoverTrigger>
                   <PopoverContent className="flex flex-col gap-3 cursor-pointer">
                     <Button><Link to={`/${currentUser.role}/home`} className="w-full">DashBoard</Link></Button>
-                    <Button><Link to={`/${currentUser.role}/profile`} className="w-full ">Profile</Link></Button>
+                    <Button><Link to='/profile' className="w-full ">Profile</Link></Button>
                     
                   </PopoverContent>
                 </Popover>

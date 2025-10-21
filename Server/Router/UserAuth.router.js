@@ -17,8 +17,21 @@ router.get('/profile', authenticateToken, async (req, res) => {
                 isActive: req.user.isActive,
                 lastLogin: req.user.lastLogin,
                 fullName: req.user.fullName,
-
-
+                profileImage: req.user.profileImage,
+                phone: req.user.phone,
+                address: req.user.address,
+                gender: req.user.gender,
+                age: req.user.age,
+                bloodGroup: req.user.bloodGroup,
+                speciality: req.user.speciality,
+                doctorLicense: req.user.doctorLicense,
+                experience: req.user.experience,
+                nurseLicense: req.user.nurseLicense,
+                shift: req.user.shift,
+                department: req.user.department,
+                workingHours: req.user.workingHours,
+                createdAt: req.user.createdAt,
+                updatedAt: req.user.updatedAt,
             }
         });
     } catch (error) {

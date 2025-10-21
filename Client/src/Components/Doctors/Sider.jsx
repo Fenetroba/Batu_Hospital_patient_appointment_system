@@ -15,7 +15,7 @@ import {
   SidebarTrigger,
   SidebarProvider,
 } from "@/Components/ui/sidebar";
-import HomePage from "@/Page/Doctors/HomePage";
+import HomePage from "./Home";
 import BottomProfile from "../AllUsers/BottomProfile";
 import { useState } from "react";
 

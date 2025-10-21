@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+
 import { User, Mail, Phone, Lock, Bell, Globe, Shield, Eye, EyeOff, Camera, Save, MapPin, Calendar } from 'lucide-react'
 
 const Setting = () => {
@@ -7,18 +9,48 @@ const Setting = () => {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  // Mock user data - replace with actual data from your backend
+  const { currentUser } = useSelector((state) => state.auth || {})
+
+  console.log(currentUser)
+
+  // Real user data from backend (prefilled from Redux auth.currentUser)
   const [profileData, setProfileData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@batuhospital.com',
-    phone: '+251-912-345-678',
-    address: 'Batu, Ethiopia',
-    dateOfBirth: '1980-05-15',
-    specialization: 'General Medicine',
-    licenseNumber: 'MD-12345',
-    bio: 'Experienced doctor with over 15 years in general medicine.'
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    dateOfBirth: '',
+    specialization: '',
+    licenseNumber: '',
+    bio: ''
   })
+
+  useEffect(() => {
+    if (!currentUser) return
+
+    // Split full name if provided
+    const fullName = currentUser.fullName || ''
+    const [firstName = '', ...rest] = fullName.trim().split(' ')
+    const lastName = rest.join(' ')
+
+    // Normalize date for <input type="date">
+    const dob = currentUser.dateOfBirth || currentUser.dob || ''
+    const normalizedDob = typeof dob === 'string' ? dob.slice(0, 10) : ''
+
+    setProfileData((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      email: currentUser.email || '',
+      phone: currentUser.phone || '',
+      address: currentUser.address || '',
+      dateOfBirth: normalizedDob,
+      specialization: currentUser.specialization || currentUser.department || '',
+      licenseNumber: currentUser.licenseNumber || '',
+      bio: currentUser.bio || ''
+    }))
+  }, [currentUser])
 
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotifications: true,

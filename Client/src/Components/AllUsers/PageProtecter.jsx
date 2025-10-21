@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+
 const PageProtector = ({ allowedRoles = [], children }) => {
     const location = useLocation();
     const {isLoading, isAuthenticated ,currentUser } = useSelector((state) => state.auth);
@@ -14,6 +15,9 @@ const PageProtector = ({ allowedRoles = [], children }) => {
     // If not authenticated, redirect to login with return URL
     if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+    if(isAuthenticated && allowedRoles.includes('profile')){
+        return <Navigate to="/profile" state={{ from: location }} replace />;
     }
 
     // If no specific roles required, allow access

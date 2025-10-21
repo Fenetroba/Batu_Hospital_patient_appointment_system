@@ -56,7 +56,26 @@ export const loginUser = async (req, res) => {
         const payload = {
             id: user._id,
             email: user.email,
-            role: user.role
+            role: user.role,
+            fullName: user.fullName,
+            profileImage: user.profileImage,
+            phone: user.phone,
+            address: user.address,
+            gender: user.gender,
+            age: user.age,
+            isActive: user.isActive,
+            bloodGroup: user.bloodGroup,
+            speciality: user.speciality,
+            doctorLicense: user.doctorLicense,
+            experience: user.experience,
+            nurseLicense: user.nurseLicense,
+            shift: user.shift,
+            department: user.department,
+            workingHours: user.workingHours,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+
+
         };
 
         // Generate JWT token
@@ -86,7 +105,23 @@ export const loginUser = async (req, res) => {
             fullName: user.fullName,
             role: user.role,
             isActive: user.isActive,
-            lastLogin: user.lastLogin
+            lastLogin: user.lastLogin,
+            profileImage: user.profileImage,
+            phone: user.phone,
+            address: user.address,
+            gender: user.gender,
+            age: user.age,
+            bloodGroup: user.bloodGroup,
+            speciality: user.speciality,
+            doctorLicense: user.doctorLicense,
+            experience: user.experience,
+            nurseLicense: user.nurseLicense,
+            shift: user.shift,
+            department: user.department,
+            workingHours: user.workingHours,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            
         };
 
         res.status(200).json({
