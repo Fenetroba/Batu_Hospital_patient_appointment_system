@@ -73,7 +73,7 @@ const App = () => {
             }
           />
           <Route
-            path="/reseption/home"
+            path="/Receptionist/home"
             element={
               <PageProtector allowedRoles={['Receptionist']}>
                 <ReseptionHomePage />

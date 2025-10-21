@@ -38,14 +38,10 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    if (currentUserRole === 'Admin' && role === 'Patient') {
-      return res.status(403).json({
-        message: "Admins cannot create Patient users. Only Receptionists can create Patients."
-      });
-    }
+ 
 
     // Role-specific validation
-    if (!fullName || !email || !password || !role) {
+    if (!fullName || !email || !password) {
       return res.status(400).json({
         message: "Basic fields missing: fullName, email, password, and role are required"
       });

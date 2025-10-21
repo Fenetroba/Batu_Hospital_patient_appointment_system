@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../Stores/UserAuthslicer';
 import { toast } from "sonner";
 import Language from '@/Components/Language/Language';
+import { useLanguage } from '@/Context/LanguageContext';
 
 const Login = ({user,isAuthenticated}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { isLoading} = useSelector((state) => state.auth);
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -75,10 +77,10 @@ const Login = ({user,isAuthenticated}) => {
       {/* Welcome Section */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center min-h-[40vh] md:h-[100vh] bg-[var(--six)] p-6 md:p-10">
         <h1 className="text-xl md:text-2xl font-bold text-white text-center mb-4">
-          Welcome to Batu Hospital
+          {t('welcomeTitle')}
         </h1>
         <p className="text-white text-center mb-6 md:mb-10">
-          Please login to access your account
+          {t('loginSubtitle')}
         </p>
         <Language /> 
       </div>
@@ -88,19 +90,19 @@ const Login = ({user,isAuthenticated}) => {
         <div className="w-full max-w-md">
           <div className="bg-[var(--six)] p-6 md:p-10 rounded-2xl w-full">
             <h1 className="text-xl md:text-2xl font-bold text-white text-center">
-              Login
+              {t('loginTitle')}
             </h1>
             <p className="text-white text-center mb-6 md:mb-10">
-              Enter your credentials to continue
+              {t('loginSubtitle')}
             </p>
 
-          
+            
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
                 type="email"
                 name="email"
-                placeholder="Email"
+                placeholder={t('email')}
                 value={formData.email}
                 onChange={(e)=>setFormData({...formData,email:e.target.value})}
                 className="border text-white bg-transparent border-gray-300 rounded-md p-2 md:p-3 focus:outline-none focus:ring-2 focus:ring-[var(--two)]"
@@ -109,7 +111,7 @@ const Login = ({user,isAuthenticated}) => {
               <input
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder={t('password')}
                 value={formData.password}
                  onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 className="border text-white bg-transparent border-gray-300 rounded-md p-2 md:p-3 focus:outline-none focus:ring-2 focus:ring-[var(--two)]"
@@ -121,15 +123,14 @@ const Login = ({user,isAuthenticated}) => {
                 disabled={isLoading}
                 className="bg-[var(--one)] text-black font-bold p-2 md:p-3 rounded-md hover:bg-opacity-90 transition-colors disabled:opacity-50"
               >
-                {isLoading ? 'Logging in...' : 'Login'}
+                {isLoading ? `${t('login')}...` : t('login')}
               </button>
             </form>
 
             {/* Optional: Link to registration */}
             <p className="text-white text-center mt-4">
-              Don't have an account?{' '}
-              <a href="/register" className="text-[var(--one)] hover:underline">
-                Register here
+              <a href="/location" className="text-[var(--one)] hover:underline">
+                {t('register')}
               </a>
             </p>
           </div>

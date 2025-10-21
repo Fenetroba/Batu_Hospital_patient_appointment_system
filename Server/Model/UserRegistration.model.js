@@ -16,7 +16,9 @@ const userRegistrationSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        default: 'password'
+        
     },
     role: {
         type: String,
@@ -86,7 +88,16 @@ const userRegistrationSchema = new mongoose.Schema({
        isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    emergencyContactName: {
+        type: String,
+        default: ''
+    },
+    emergencyContactPhone: {
+        type: String,
+        default: ''
+    },
+    
 }, {
     timestamps: true
 });
