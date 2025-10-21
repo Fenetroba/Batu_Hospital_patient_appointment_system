@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Logo from '../../assets/Logo.png'
 import {
   Popover,
   PopoverContent,
@@ -84,6 +85,7 @@ const Header = ({ currentUser, isAuth }) => {
           >
             <span className="text-2xl font-bold text-gray-900">
               BATU <span className="text-[var(--five)]">HOSPITAL</span>
+              <img src={Logo} alt="Logo"  className="w-45 h-26 absolute mt-2 rounded-b-2xl"/>
             </span>
           </a>
 

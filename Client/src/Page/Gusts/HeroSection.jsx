@@ -14,7 +14,7 @@ const HeroSection = () => {
       description: t('welcomeDescription'),
      
       ctaLink: "/login",
-      bgColor: "from-[var(--five)] to-[var(--four)]"
+      bgColor: "from-[var(--five)] to-[var(--two)]"
     },
     {
       title: t('emergencyTitle'),
@@ -38,7 +38,7 @@ const HeroSection = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 10000);
+    }, 2000);
 
     return () => clearInterval(timer);
   }, [slides.length]);
