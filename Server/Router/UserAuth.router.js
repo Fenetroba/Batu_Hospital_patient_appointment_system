@@ -1,11 +1,10 @@
 import express from 'express';
-import {loginUser } from '../Controller/UserAuth.controller.js';
+import {loginUser, logoutUser } from '../Controller/UserAuth.controller.js';
 import { authenticateToken, authorizeRole } from '../Middelware/Protector.js';
 
 const router = express.Router();
 router.post('/login', loginUser);
-
-// Protected routes (require authentication)
+router.post('/logout', authenticateToken, logoutUser);
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
         // Return current user info
@@ -18,7 +17,6 @@ router.get('/profile', authenticateToken, async (req, res) => {
                 isActive: req.user.isActive,
                 lastLogin: req.user.lastLogin,
                 fullName: req.user.fullName,
-                
 
 
             }

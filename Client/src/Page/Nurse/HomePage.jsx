@@ -1,9 +1,12 @@
+import NurseSidebar from '@/Components/Nurses/Sider'
 import React from 'react'
 
-const HomePage = () => {
+const NurseHomePage = () => {
   return (
-    <div>HomePage</div>
+    <div>
+      <NurseSidebar/>
+    </div>
   )
 }
 
-export default HomePage
+export default NurseHomePage

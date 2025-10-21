@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,58 +16,72 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useLanguage } from '@/Context/LanguageContext';
+import { useLanguage } from "@/Context/LanguageContext";
+import { useDispatch } from "react-redux";
 
-const Header = () => {
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "@/Stores/UserAuthslicer";
+
+const Header = ({ currentUser, isAuth }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const LogoutHandler = () => {
+    dispatch(logoutUser());
+    navigate("/");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
-    { name: t('home'), path: '/' },
+    { name: t("home"), path: "/" },
     {
-      name: t('aboutUs'),
+      name: t("aboutUs"),
       subItems: [
-        { name: t('location'), path: '/location' },
-        { name: t('information'), path: '/about' },
-        { name: t('ourTeam'), path: '/team' },
+        { name: t("location"), path: "/location" },
+        { name: t("information"), path: "/about" },
+        { name: t("ourTeam"), path: "/team" },
       ],
     },
     {
-      name: t('ourServices'),
+      name: t("ourServices"),
       subItems: [
-        { name: t('specialties'), path: '#/services' },
-        { name: t('appointments'), path: '#/appointments' },
-        { name: t('emergency'), path: '#/emergency' },
+        { name: t("specialties"), path: "#/services" },
+        { name: t("appointments"), path: "#/appointments" },
+        { name: t("emergency"), path: "#/emergency" },
       ],
     },
-    { name: t('contact'), path: '/location' },
+    { name: t("contact"), path: "/location" },
   ];
-
-
 
   const handleNavClick = () => {
     setMobileMenuOpen(false);
   };
 
   return (
-    <header 
+    <header
       className={`sticky top-0 bg-[var(--one)] z-50 shadow transition-all duration-300 ${
-        isScrolled ? 'shadow-md py-2' : 'py-4'
+        isScrolled ? "shadow-md py-2" : "py-4"
       }`}
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#/" className="flex items-center space-x-2" onClick={handleNavClick}>
+          <a
+            href="#/"
+            className="flex items-center space-x-2"
+            onClick={handleNavClick}
+          >
             <span className="text-2xl font-bold text-gray-900">
               BATU <span className="text-[var(--five)]">HOSPITAL</span>
             </span>
@@ -113,10 +133,37 @@ const Header = () => {
             </NavigationMenu>
 
             <div className="ml-4 flex items-center space-x-2">
-              <Button variant="outline" asChild className='bg-[var(--six)] text-white'>
-               <Link to="/login">{t('login')}</Link>
-              </Button>
-             
+              {isAuth ? (
+                <Button onClick={LogoutHandler}>LogOut</Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  asChild
+                  className="bg-[var(--six)] text-white"
+                >
+                  <Link to="/login">{t("login")}</Link>
+                </Button>
+              )}
+              {isAuth && (
+                <Popover>
+                  <PopoverTrigger className=" cursor-pointer">
+                    <Avatar className="w-15 h-15">
+                      <AvatarImage
+                        src={currentUser?.profileImage}
+                        alt={currentUser?.name || "User"}
+                      />
+                      <AvatarFallback>
+                        {currentUser?.name?.charAt(0) || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </PopoverTrigger>
+                  <PopoverContent className="flex flex-col gap-3 cursor-pointer">
+                    <Button><Link to={`/${currentUser.role}/home`} className="w-full">DashBoard</Link></Button>
+                    <Button><Link to={`/${currentUser.role}/profile`} className="w-full ">Profile</Link></Button>
+                    
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </nav>
 
@@ -127,7 +174,11 @@ const Header = () => {
               className="p-2 rounded-md text-gray-700 hover:bg-gray-100"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -137,16 +188,21 @@ const Header = () => {
           <div className="md:hidden mt-4 pb-4">
             <div className="space-y-1 px-2 pt-2 pb-3">
               {navItems.map((item) => (
-                <div key={item.name} className="border-b border-gray-200 last:border-0">
+                <div
+                  key={item.name}
+                  className="border-b border-gray-200 last:border-0"
+                >
                   {item.subItems ? (
                     <div className="py-2">
                       <button
                         className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50"
                         onClick={() => {
                           // Toggle submenu
-                          const submenu = document.getElementById(`mobile-submenu-${item.name}`);
+                          const submenu = document.getElementById(
+                            `mobile-submenu-${item.name}`
+                          );
                           if (submenu) {
-                            submenu.classList.toggle('hidden');
+                            submenu.classList.toggle("hidden");
                           }
                         }}
                       >
@@ -163,7 +219,10 @@ const Header = () => {
                           />
                         </svg>
                       </button>
-                      <div id={`mobile-submenu-${item.name}`} className="hidden pl-4">
+                      <div
+                        id={`mobile-submenu-${item.name}`}
+                        className="hidden pl-4"
+                      >
                         {item.subItems.map((subItem) => (
                           <a
                             key={subItem.name}
@@ -188,9 +247,13 @@ const Header = () => {
                 </div>
               ))}
               <div className="pt-4 space-y-2">
-                <Button variant="outline" className="w-full bg-[var(--six)] text-white" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full bg-[var(--six)] text-white"
+                  asChild
+                >
                   <Link to="/login" onClick={handleNavClick}>
-                    {t('login')}
+                    {t("login")}
                   </Link>
                 </Button>
               </div>

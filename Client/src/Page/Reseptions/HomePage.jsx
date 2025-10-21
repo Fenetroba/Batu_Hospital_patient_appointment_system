@@ -1,9 +1,12 @@
+import ReseptionSidebar from '@/Components/Reseption/Sider'
 import React from 'react'
 
-const HomePage = () => {
+const ReseptionHomePage = () => {
   return (
-    <div>HomePage</div>
+    <div>
+      <ReseptionSidebar/>
+    </div>
   )
 }
 
-export default HomePage
+export default ReseptionHomePage

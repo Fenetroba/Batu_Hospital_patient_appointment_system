@@ -20,12 +20,6 @@ const UserAuthSchema = new mongoose.Schema({
         required: true,
         minlength: [6, 'Password must be at least 6 characters long']
     },
-    role: {
-        type: String,
-        enum: ['Admin', 'Receptionist', 'Patient', 'Doctor', 'Nurse'],
-        default: 'Patient',
-        required: true
-    },
     lastLogin: {
         type: Date,
         default: null
