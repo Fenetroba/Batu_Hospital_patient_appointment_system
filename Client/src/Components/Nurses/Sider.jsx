@@ -93,7 +93,7 @@ const NurseSidebar = () => {
           <Reports />
         ) : OpenFile === "Settings" ? (
           <Setting />
-        ) : null}
+        ) : <NurseHome />}
       </main>
     </SidebarProvider>
   );

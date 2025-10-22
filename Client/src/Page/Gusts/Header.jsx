@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "@/Stores/UserAuthslicer";
+import BottomProfile from "@/Components/AllUsers/BottomProfile";
 
 const Header = ({ currentUser, isAuth }) => {
   const dispatch = useDispatch();
@@ -149,14 +150,9 @@ const Header = ({ currentUser, isAuth }) => {
               {isAuth && (
                 <Popover>
                   <PopoverTrigger className=" cursor-pointer">
-                    <Avatar className="w-15 h-15">
-                      <AvatarImage
-                        src={currentUser?.profileImage}
-                        alt={currentUser?.name || "User"}
-                      />
-                      <AvatarFallback>
-                        {currentUser?.name?.charAt(0) || "U"}
-                      </AvatarFallback>
+                    <Avatar className="w-15 h-15 bg-white">
+                      <BottomProfile/>
+                      
                     </Avatar>
                   </PopoverTrigger>
                   <PopoverContent className="flex flex-col gap-3 cursor-pointer">

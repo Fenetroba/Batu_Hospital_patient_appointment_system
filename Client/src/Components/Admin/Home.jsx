@@ -35,9 +35,17 @@ console.log(appointments)
 
       <div className="mt-8 bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Welcome to Admin Dashboard</h2>
-        <p className="text-gray-600">
-          Manage your hospital appointment system from here. Use the sidebar to navigate between different sections.
-        </p>
+        <div className='flex gap-6'>
+          <div className='w-[30%] bg-gradient-to-b from-[var(--six)] to-[var(--five)] p-6 h-[200px] rounded-[10px]'>
+
+          </div>
+          <div className='w-[30%] bg-gradient-to-b from-[var(--six)] to-[var(--five)] p-6 h-[200px] rounded-[10px]'>
+
+          </div>
+          <div className='w-[30%] bg-gradient-to-b from-[var(--six)] to-[var(--five)] p-6 h-[200px] rounded-[10px]'>
+
+          </div>
+        </div>
       </div>
     </div>
   )

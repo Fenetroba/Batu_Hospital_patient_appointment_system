@@ -271,6 +271,7 @@ export const languages = {
       thisActionCannotBeUndone: 'ይህ እርምጃ አይመለስም።',
       cancel: 'አቋርጥ',
       confirm: 'አረጋግጥ',
+      visitorsToday:'fdfdfdf'
     }
   },
   

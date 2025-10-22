@@ -91,7 +91,7 @@ const DoctorsSidebar = () => {
           <Patient />
         ) : OpenFile === "Settings" ? (
           <Setting />
-        ) : null}
+        ) : <HomePage />}
       </main>
     </SidebarProvider>
   );

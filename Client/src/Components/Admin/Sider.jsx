@@ -92,7 +92,7 @@ const AdminSidebar = () => {
           <Reports />
         ) : OpenFile === "Settings" ? (
           <Setting />
-        ) : null}
+        ) : <AdminHome />}
       </main>
     </SidebarProvider>
   );

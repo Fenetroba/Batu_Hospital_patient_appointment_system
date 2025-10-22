@@ -17,7 +17,8 @@ const Fetch_patient = () => {
   }, [dispatch])
 
   const normalized = useMemo(() => {
-    return (users || []).map(u => ({
+    const patientsOnly = (users || []).filter(u => u.role === 'Patient')
+    return patientsOnly.map(u => ({
       id: u._id || u.id,
       fullName: u.fullName || `${u.firstName || ''} ${u.lastName || ''}`.trim(),
       firstName: u.firstName,

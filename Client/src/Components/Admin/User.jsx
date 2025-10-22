@@ -45,11 +45,12 @@ const User = () => {
   }, [dispatch])
 
   // Calculate stats from Redux state
+  const nonPatients = (users || []).filter(u => u.role !== 'Patient')
   const stats = [
-    { label: 'Total Users', value: users.length.toString(), icon: Users, color: 'bg-blue-500' },
-    { label: 'Active Users', value: users.filter(u => u.isActive === true).length.toString(), icon: UserCheck, color: 'bg-green-500' },
+    { label: 'Total Users', value: nonPatients.length.toString(), icon: Users, color: 'bg-blue-500' },
+    { label: 'Active Users', value: nonPatients.filter(u => u.isActive === true).length.toString(), icon: UserCheck, color: 'bg-green-500' },
     { label: 'New This Month', value: '45', icon: UserPlus, color: 'bg-purple-500' },
-    { label: 'Admins', value: users.filter(u => u.role === 'Admin').length.toString(), icon: Shield, color: 'bg-orange-500' }
+    { label: 'Admins', value: nonPatients.filter(u => u.role === 'Admin').length.toString(), icon: Shield, color: 'bg-orange-500' }
   ]
 
   const getRoleBadgeColor = (role) => {
@@ -346,7 +347,7 @@ const User = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {users.map((user) => (
+              {users.filter(u => u.role !== 'Patient').map((user) => (
                 <tr key={user._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm font-medium text-gray-800">{user.fullName}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>

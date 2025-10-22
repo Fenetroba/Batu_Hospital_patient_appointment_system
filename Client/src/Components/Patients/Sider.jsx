@@ -1,5 +1,5 @@
 import { Home, Inbox, Settings, User,FileText } from "lucide-react";
-import Users from "./Reseption";
+import PatientsHome from "./Patients";
 import Reports from "./Reports";
 import Inboxs from "./Inbox";
 import Setting from "../AllUsers/Setting";
@@ -18,7 +18,6 @@ import {
 
 import BottomProfile from "../AllUsers/BottomProfile";
 import { useState } from "react";
-import ReseptionHome from "./Home";
 
 
 // Menu items.
@@ -84,16 +83,16 @@ const PatientsSidebar = () => {
       <main className="flex-1 p-4">
         <SidebarTrigger />
         {OpenFile === "Home" ? (
-          <ReseptionHome />
+          <PatientsHome />
         ) : OpenFile === "Inbox" ? (
           <Inboxs />
         ) : OpenFile === "Patients" ? (
-          <Users />
+          <Patients />
         ) : OpenFile === "Reports" ? (
           <Reports />
         ) : OpenFile === "Settings" ? (
           <Setting />
-        ) : null}
+        ) : <Patients />}
       </main>
     </SidebarProvider>
   );

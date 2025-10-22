@@ -93,7 +93,7 @@ const ReseptionSidebar = () => {
           <Reports />
         ) : OpenFile === "Settings" ? (
           <Setting />
-        ) : null}
+        ) : <ReseptionHome />}
       </main>
     </SidebarProvider>
   );
