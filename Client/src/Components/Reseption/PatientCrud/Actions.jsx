@@ -34,13 +34,13 @@ const Actions = ({ active, onEdit, onToggleStatus, onDelete }) => {
         <div className="flex flex-col gap-1">
           <button
             onClick={onEdit}
-            className="w-full text-left px-3 py-2 rounded-md text-white hover:bg-[var(--two)]"
+            className="w-full text-left px-3 py-2 rounded-md text-white hover:bg-[var(--four)]"
           >
             {t('edit') || 'Edit'}
           </button>
           <button
             onClick={onToggleStatus}
-            className="w-full text-left px-3 py-2 rounded-md text-white hover:bg-[var(--two)]"
+            className="w-full text-left px-3 py-2 rounded-md text-white hover:bg-[var(--four)]"
           >
             {active ? (t('deactivate') || 'Deactivate') : (t('activate') || 'Activate')}
           </button>

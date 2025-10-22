@@ -3,12 +3,16 @@ import { useLanguage } from '@/Context/LanguageContext'
 import Language from '@/Components/Language/Language'
 import Actions from './Actions'
 import StatusSwitch from './status'
+import EditPatientData from './EditPatientData'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers, UpdateUser, DeleteUser } from '@/Stores/UserSlice'
 
 const Fetch_patient = () => {
   const { t } = useLanguage()
   const [query, setQuery] = useState('')
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedPatient, setSelectedPatient] = useState(null)
   const dispatch = useDispatch()
   const { users, loading } = useSelector((state) => state.user)
 
@@ -25,6 +29,8 @@ const Fetch_patient = () => {
       lastName: u.lastName,
       phone: u.phone || u.phoneNumber,
       gender: u.gender,
+      email: u.email,
+      emergencyContact: u.emergencyContact,
       active: typeof u.isActive === 'boolean' ? u.isActive : (u.active ?? true),
     }))
   }, [users])
@@ -44,10 +50,18 @@ const Fetch_patient = () => {
     await dispatch(DeleteUser(id))
   }
 
-  const toggleStatus = async (id) => {
-    const user = normalized.find(x => x.id === id)
-    if (!user) return
-    await dispatch(UpdateUser({ id, userData: { isActive: !user.active } }))
+  const editPatient = (patient) => {
+    setSelectedPatient(patient)
+    setShowEditModal(true)
+  }
+
+  const closeEditModal = () => {
+    setShowEditModal(false)
+    setSelectedPatient(null)
+  }
+
+  const handleEditSubmit = () => {
+    dispatch(fetchUsers()) // Refresh the list after edit
   }
 
   return (
@@ -80,6 +94,8 @@ const Fetch_patient = () => {
               <th className="py-2 pr-4">{t('name') || 'Name'}</th>
               <th className="py-2 pr-4">{t('phoneNumber') || 'Phone Number'}</th>
               <th className="py-2 pr-4">{t('gender') || 'Gender'}</th>
+              <th className="py-2 pr-4">{t('email') || 'Email'}</th>
+              <th className="py-2 pr-4">{t('emergencyContact') || 'Emergency Contact'}</th>
               <th className="py-2 pr-4">{t('status') || 'Status'}</th>
               <th className="py-2 pr-4">{t('actions') || 'Actions'}</th>
             </tr>
@@ -96,18 +112,20 @@ const Fetch_patient = () => {
               </tr>
             )}
             {filtered.map((p) => (
-              <tr key={p.id} className="border-t border-[var(--two)] text-white">
+              <tr key={p.id} className="border-t border-[var(--two)] bg-[var(--four)] text-white hover:bg-[var(--three)]">
                 <td className="py-2 pr-4">P_{p.id}</td>
                 <td className="py-2 pr-4">{p.fullName || `${p.firstName || ''} ${p.lastName || ''}`}</td>
                 <td className="py-2 pr-4">{p.phone || ''}</td>
                 <td className="py-2 pr-4">{p.gender}</td>
+                <td className="py-2 pr-4">{p.email}</td>
+                <td className="py-2 pr-4">{p.emergencyContact}</td>
                 <td className="py-2 pr-4 ">
                   <StatusSwitch  checked={p.active} onChange={()=>toggleStatus(p.id)} />
                 </td>
                 <td className="py-2 pr-4">
                   <Actions
                     active={p.active}
-                    onEdit={()=>{}}
+                    onEdit={() => editPatient(p)}
                     onToggleStatus={()=>toggleStatus(p.id)}
                     onDelete={()=>deletePatient(p.id)}
                   />
@@ -122,7 +140,17 @@ const Fetch_patient = () => {
         { `Showing ${filtered.length} records`}
       </div>
 
-      
+      {showEditModal && (
+        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+          <DialogContent className="max-w-2xl">
+            <EditPatientData
+              patient={selectedPatient}
+              onClose={closeEditModal}
+              onSubmit={handleEditSubmit}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }
