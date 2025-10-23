@@ -15,6 +15,7 @@ const Location = React.lazy(() => import("./Page/Location"));
 
 const AdminHome = React.lazy(() => import("./Page/Admin/Homepage"));
 const NurseHomePage = React.lazy(() => import("./Page/Nurse/HomePage"));
+const CreateAppointment = React.lazy(() => import("./Components/Nurses/AppointmentCRUD/CreateAppointment"));
 const ReseptionHomePage = React.lazy(() => import("./Page/Reseptions/HomePage"));
 const PatientsHomePage = React.lazy(() => import("./Page/Patients/HomePage"));
 
@@ -89,13 +90,21 @@ const App = () => {
             }
           />
            <Route
-    path="/profile"
-    element={
-      <PageProtector allowedRoles={['Doctor', 'Nurse', 'Patient', 'Admin', 'Receptionist']}>
-        <Profile />
-      </PageProtector>
-    }
-  />
+            path="/profile"
+            element={
+              <PageProtector allowedRoles={['Doctor', 'Nurse', 'Patient', 'Admin', 'Receptionist']}>
+                <Profile />
+              </PageProtector>
+            }
+          />
+          <Route
+            path="/nurses/appointments/create"
+            element={
+              <PageProtector allowedRoles={['Nurse']}>
+                <CreateAppointment />
+              </PageProtector>
+            }
+          />
           <Route
             path="/settings"
             element={

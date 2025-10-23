@@ -1,5 +1,5 @@
 import express from 'express';
-import {loginUser, logoutUser } from '../Controller/UserAuth.controller.js';
+import { loginUser, logoutUser, getDoctors } from '../Controller/UserAuth.controller.js';
 import { authenticateToken, authorizeRole } from '../Middelware/Protector.js';
 
 const router = express.Router();
@@ -43,6 +43,10 @@ router.get('/profile', authenticateToken, async (req, res) => {
         });
     }
 });
+
+// Admin only routes
+// Get all doctors or filter by department
+router.get('/users/doctors', authenticateToken, getDoctors);
 
 // Admin only routes
 router.get('/admin/users', authenticateToken, authorizeRole('Admin'), async (req, res) => {

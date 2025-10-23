@@ -2,10 +2,28 @@ import React from "react";
 import Language from "@/Components/Language/Language";
 import { useLanguage } from "@/Context/LanguageContext";
 import { useSelector } from "react-redux";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
+const data = [
+  { name: "Jan", patient: 10, checkin: 5 },
+  { name: "Feb", patient: 17, checkin: 12 },
+  { name: "Mar", patient: 49, checkin: 25 },
+];
+const Color = ["#0088fe", "#00c4ff", "#000000"];
 const ReseptionHome = () => {
   const { currentUser } = useSelector((state) => state.auth);
-  console.log(currentUser);
   const { t } = useLanguage();
 
   return (
@@ -31,7 +49,7 @@ const ReseptionHome = () => {
             </div>
             <div className="text-3xl font-bold text-white mt-2">0</div>
           </div>
-       
+
           <div className="bg-[var(--six)] rounded-xl p-5">
             <div className="text-sm text-gray-300">
               {t("pendingCheckins") || "Pending Check-ins"}
@@ -40,14 +58,30 @@ const ReseptionHome = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        
+        <div className="">
+          <div className="flex justify-between items-center bg-gradient-to-b from-[var(--six)] to-[var(--five)] rounded-xl p-5">
+           <LineChart width='100%' height={300} data={data}>
 
-          <div className="bg-gradient-to-b from-[var(--six)] to-[var(--five)] rounded-xl p-5">
-            <div className="flex items-center justify-between mb-4">
-              
-            </div>
+            <Line dataKey='patient' stroke="#ffffdd" strokeWidth={3}/>
+            <Line dataKey='checkin' stroke="#64e" strokeWidth={2}/>
+            <CartesianGrid strokeDasharray='3 2'/>
+            <XAxis  dataKey='name'/>
+            <YAxis/>
+         <Tooltip/>
+         <Legend/>
+
+           </LineChart>
            
+         <PieChart width={300} height={300}>
+          <Pie data={data} dataKey='patient' label>
+           {
+            data.map((item,i)=>(
+              <Cell key={i} fill={Color[i]}/>
+            ))
+           }
+        <Tooltip/>
+          </Pie>
+         </PieChart>
           </div>
         </div>
       </div>

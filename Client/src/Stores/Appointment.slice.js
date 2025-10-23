@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 
 
-// Initial state
+
 const initialState = {
   appointments: [],
   loading: false,
@@ -17,10 +17,8 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(API_URL, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+   
+      const response = await axios.get('/appointment');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch appointments');
@@ -32,10 +30,8 @@ export const createAppointment = createAsyncThunk(
   'appointments/create',
   async (appointmentData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(API_URL, appointmentData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+
+      const response = await axios.post('/appointment', appointmentData);
       return response.data.appointment;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create appointment');

@@ -3,13 +3,10 @@ import Appointment from '../Model/Appointment.model.js';
 export const createAppointment = async (req, res) => {
     try {
         // Validate request
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+        
 
-        const { patient, doctor, date, timeSlot, reason } = req.body;
-
+        const {doctor, date, timeSlot,PatientName,department } = req.body;
+         const PatientId=req.user.id;
         // Check if the slot is already booked
         const existingAppointment = await Appointment.findOne({
             doctor,
@@ -24,12 +21,13 @@ export const createAppointment = async (req, res) => {
 
         // Create new appointment
         const appointment = new Appointment({
-            patient,
+            patient:PatientId,
             doctor,
             date,
             timeSlot,
-            reason,
-            status: 'scheduled'
+            status: 'scheduled',
+            PatientName,
+            department
         });
 
         await appointment.save();

@@ -85,7 +85,8 @@ export const CreateUser = createAsyncThunk("user/createUser", async (user) => {
 });
 
 export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
-    const response = await axiosInstance.get("/");
+    // Fetch only users with role 'patient'
+    const response = await axiosInstance.get("/?role=patient");
     return response.data;
 });
 

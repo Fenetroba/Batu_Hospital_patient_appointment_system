@@ -1,5 +1,5 @@
 import { Home, Inbox, Settings, User,FileText } from "lucide-react";
-import Users from "./Patients";
+import Appointment from "./Appointment";
 import Reports from "./Reports";
 import Inboxs from "./Inbox";
 import Setting from "../AllUsers/Setting";
@@ -32,7 +32,7 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Patients",
+    title: "Appointment",
     icon: User,
   },
   {
@@ -87,8 +87,8 @@ const NurseSidebar = () => {
           <NurseHome />
         ) : OpenFile === "Inbox" ? (
           <Inboxs />
-        ) : OpenFile === "Patients" ? (
-          <Users />
+        ) : OpenFile === "Appointment" ? (
+          <Appointment />
         ) : OpenFile === "Reports" ? (
           <Reports />
         ) : OpenFile === "Settings" ? (

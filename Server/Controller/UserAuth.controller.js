@@ -140,6 +140,41 @@ export const loginUser = async (req, res) => {
     }
 };
 
+/**
+ * @description Get all doctors or filter by department
+ * @route GET /api/users/doctors
+ * @access Private
+ */
+export const getDoctors = async (req, res) => {
+    try {
+        const { department } = req.query;
+        
+        // Build query
+        const query = { role: 'Doctor', isActive: true };
+        if (department) {
+            query.department = department;
+        }
+
+        // Get doctors with selected fields
+        const doctors = await User.find(query)
+            .select('_id fullName email department speciality')
+            .lean();
+
+        res.status(200).json({
+            success: true,
+            count: doctors.length,
+            data: doctors
+        });
+    } catch (error) {
+        console.error('Error fetching doctors:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
 export const logoutUser = async (req, res) => {
     try {
         // Clear the token cookie

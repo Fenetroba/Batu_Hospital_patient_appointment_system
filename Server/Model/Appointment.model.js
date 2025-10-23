@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const appointmentSchema = new mongoose.Schema({
+  PatientName: {
+    type: String,
+    required: true
+  },
   patient: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -24,8 +28,9 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['scheduled', 'completed', 'cancelled'],
     default: 'scheduled'
   },
-  reason: {
+  department: {
     type: String,
+    // enum:["General","Cardiology","Neurology","Pediatrics","Orthopedics","Dermatology"]
     required: true
   }
 }, { timestamps: true });
