@@ -64,6 +64,24 @@ const Fetch_patient = () => {
     dispatch(fetchUsers()) // Refresh the list after edit
   }
 
+  const toggleStatus = async (id) => {
+    try {
+      const patient = users.find(p => (p._id || p.id) === id);
+      if (patient) {
+        const updatedStatus = !(patient.isActive ?? patient.active);
+        console.log(updatedStatus)
+      
+        await dispatch(UpdateUser({
+          id,
+          userData: { isActive: updatedStatus }
+        }));
+        dispatch(fetchUsers()); // Refresh the list
+      }
+    } catch (error) {
+      console.error('Error toggling patient status:', error);
+    }
+  }
+
   return (
     <div className="bg-[var(--six)] rounded-xl p-4">
       <div className="flex items-center justify-between mb-4">
@@ -101,7 +119,7 @@ const Fetch_patient = () => {
             </tr>
           </thead>
           <tbody>
-            {loading && (
+            {/* {loading && (
               <tr>
                 <td colSpan={6} className="py-4 text-gray-300">{t('loading') || 'Loading...'}</td>
               </tr>
@@ -110,7 +128,7 @@ const Fetch_patient = () => {
               <tr>
                 <td colSpan={6} className="py-4 text-gray-300">{t('noResults') || 'No results found.'}</td>
               </tr>
-            )}
+            )} */}
             {filtered.map((p) => (
               <tr key={p.id} className="border-t border-[var(--two)] bg-[var(--four)] text-white hover:bg-[var(--three)]">
                 <td className="py-2 pr-4">P_{p.id}</td>

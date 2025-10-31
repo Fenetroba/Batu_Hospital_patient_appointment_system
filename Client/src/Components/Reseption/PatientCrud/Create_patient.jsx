@@ -13,8 +13,7 @@ const Create_patient = () => {
     firstName: '',
     lastName: '',
     gender: '',
-    dateOfBirth: '',
-    age: '',
+    birthDate: new Date(),
     bloodGroup: '',
     email: '',
     phoneNumber: '',
@@ -33,7 +32,7 @@ const Create_patient = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.gender || !formData.dateOfBirth || !formData.age || !formData.phoneNumber || !formData.address) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.gender || !formData.birthDate || !formData.phoneNumber || !formData.address) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -51,8 +50,7 @@ const Create_patient = () => {
         phone: formData.phoneNumber,
         // Extra fields that backend may accept or ignore
         gender: formData.gender,
-        dateOfBirth: formData.dateOfBirth,
-        age: formData.age,
+        birthDate: formData.birthDate,
         bloodGroup: formData.bloodGroup,
         emergencyContactName: formData.emergencyContactName,
         emergencyContactPhone: formData.emergencyContactPhone,
@@ -69,8 +67,7 @@ const Create_patient = () => {
         firstName: '',
         lastName: '',
         gender: '',
-        dateOfBirth: '',
-        age: '',
+        birthDate: '',
         bloodGroup: '',
         email: '',
         phoneNumber: '',
@@ -120,27 +117,17 @@ const Create_patient = () => {
             <option value="" className="text-black">{t('gender') || 'Gender'}</option>
             <option value="Male" className="text-black">{t('male') || 'Male'}</option>
             <option value="Female" className="text-black">{t('female') || 'Female'}</option>
-            <option value="Other" className="text-black">{t('other') || 'Other'}</option>
           </select>
           <input
             type="date"
             className="border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            placeholder={t('dateOfBirth') || 'Date of Birth'}
-            required
-          />
-          <input
-            type="number"
-            min="0"
-            className="border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
-            name="age"
-            value={formData.age}
+            name="birthDate"
+            value={formData.birthDate}
             onChange={handleChange}
             placeholder={t('age') || 'Age'}
             required
           />
+      
           <select
             className="border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
             name="bloodGroup"

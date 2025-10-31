@@ -1,14 +1,9 @@
 import React from 'react'
 
-
-const ReseptionHome = () => {
- 
-
+const PatientHome = () => {
   return (
-    <div className="p-6">
-     Reseption
-    </div>
+    <div>PatientHome</div>
   )
 }
 
-export default ReseptionHome
+export default PatientHome

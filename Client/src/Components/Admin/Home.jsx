@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux'
 import { LineChart, Line, YAxis, XAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 const Userss=[
-  {date:'2022-01-01',value:10,numberUser:1, Appointments:30 ,Nopatient:34},
-  {date:'2022-01-02',value:20,numberUser:2, Appointments:73,Nopatient:54},
-  {date:'2022-01-03',value:30,numberUser:3, Appointments:43,Nopatient:94},
-  {date:'2022-01-04',value:40,numberUser:4, Appointments:23,Nopatient:74},
-  {date:'2022-01-05',value:50,numberUser:5, Appointments:58,Nopatient:94},
-  {date:'2022-01-06',value:60,numberUser:6, Appointments:62,Nopatient:34},
-  {date:'2022-01-07',value:70,numberUser:7, Appointments:72,Nopatient:64},
-  {date:'2022-01-08',value:80,numberUser:8, Appointments:82,Nopatient:74},
-  {date:'2022-01-09',value:90,numberUser:9, Appointments:92,Nopatient:124},
-  {date:'2022-01-10',value:100,numberUser:10, Appointments:102,Nopatient:84},
+  {date:'2025-01-01',numberUser:1, Appointments:30 ,Nopatient:34},
+  {date:'2025-01-02',numberUser:2, Appointments:73,Nopatient:54},
+  {date:'2025-01-03',numberUser:3, Appointments:43,Nopatient:94},
+  {date:'2025-01-04',numberUser:4, Appointments:23,Nopatient:74},
+  {date:'2025-01-05',numberUser:5, Appointments:58,Nopatient:94},
+  {date:'2025-01-06',numberUser:6, Appointments:62,Nopatient:34},
+  {date:'2025-01-07',numberUser:7, Appointments:72,Nopatient:64},
+  {date:'2025-01-08',numberUser:8, Appointments:82,Nopatient:74},
+  {date:'2025-01-09',numberUser:9, Appointments:92,Nopatient:124},
+  {date:'2025-01-10',numberUser:10, Appointments:102,Nopatient:84},
 ]
 const AdminHome = () => {
   const { users } = useSelector((state) => state.user)
@@ -23,7 +23,7 @@ console.log(appointments)
     { title: 'Total Users', value: users.length.toString(), icon: Users, color: 'bg-blue-500' },
     { title: 'Appointments', value: appointments.length.toString(), icon: Calendar, color: 'bg-green-500' },
     { title: 'Reports', value: '89', icon: FileText, color: 'bg-purple-500' },
-    { title: 'Active Now', value: '42', icon: Activity, color: 'bg-orange-500' }
+    { title: 'Active Now', value: users.filter(u=>u.isActive===true).length.toString(), icon: Activity, color: 'bg-orange-500' }
   ]
 
   return (
@@ -51,7 +51,6 @@ console.log(appointments)
         <div className='flex gap-6'>
          <LineChart width='100%' height={300} data={Userss}>
           <Line type="monotone" dataKey="numberUser" stroke="blue" strokeWidth={2} />
-          <Line type="monotone" dataKey="value" stroke="red" strokeWidth={2} />
           <Line type="monotone" dataKey="Appointments" stroke="green" strokeWidth={2} />
           <Line type="monotone" dataKey="Nopatient" stroke="yellow" strokeWidth={2} />
           <XAxis dataKey="date" />

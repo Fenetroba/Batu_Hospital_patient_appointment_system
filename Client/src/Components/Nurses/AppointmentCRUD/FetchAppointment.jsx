@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const StatusBadge = ({ status }) => {
   const statusConfig = {
@@ -14,13 +15,14 @@ const StatusBadge = ({ status }) => {
   return <span className={`px-2 py-1 text-xs rounded-full ${bg} ${text}`}>{displayStatus}</span>;
 };
 
-const FetchAppointment = ({ appointments = [], onEdit, onDelete, loading = false }) => {
-  console.log(appointments)
+const FetchAppointment = ({appointments, onEdit, onDelete, loading = false }) => {
+
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
+  
 
   if (loading) {
     return (
@@ -29,6 +31,7 @@ const FetchAppointment = ({ appointments = [], onEdit, onDelete, loading = false
       </div>
     );
   }
+
 
   return (
     <div className="bg-[#1a1a2e] rounded-lg overflow-hidden border border-white/10">

@@ -17,7 +17,7 @@ const userRegistrationSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        default: 'password'
+        default: 'Ba@1234'
         
     },
     role: {
@@ -43,9 +43,9 @@ const userRegistrationSchema = new mongoose.Schema({
         enum: ['Male', 'Female', null],
         default: null
     },
-    age: {
-        type: Number,
-        default: null
+    birthDate: {
+        type: Date,
+        required: true
     },
     bloodGroup: {
         type: String,

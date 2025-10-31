@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import UserRegistrationSchema from "../Model/UserRegistration.model.js";
 import bcrypt from "bcrypt";
 
@@ -13,7 +14,7 @@ export const registerUser = async (req, res) => {
       address,
       phone,
       gender,
-      age,
+      birthDate,
       bloodGroup,
       // Doctor specific fields
       doctorLicense,
@@ -48,13 +49,13 @@ export const registerUser = async (req, res) => {
     }
 
     // Validate role-specific fields
-    if (role === 'Patient' && (!address || !phone)) {
+    if (role === 'Patient' && (!address || !phone || !gender || !birthDate || !bloodGroup)) {
       return res.status(400).json({
-        message: "Patient fields missing: address and phone are required"
+        message: "Patient fields missing: address, phone, gender, birthDate, and bloodGroup are required"
       });
     }
 
-    if (role === 'Doctor' && (!speciality || !doctorLicense || !experience || !address || !phone)) {
+    if (role === 'Doctor' && (!speciality || !doctorLicense || !experience || !address || !phone )) {
       return res.status(400).json({
         message: "Doctor fields missing: speciality, doctorLicense, experience, address, and phone are required"
       });
@@ -91,7 +92,7 @@ export const registerUser = async (req, res) => {
       address,
       phone,
       gender: gender || null,
-      age: age ? Number(age) : null,
+      birthDate: birthDate || null,
       bloodGroup: bloodGroup || null,
       // Role-specific fields
       doctorLicense: doctorLicense || null,
@@ -116,7 +117,7 @@ export const registerUser = async (req, res) => {
       address: user.address,
       phone: user.phone,
       gender: user.gender,
-      age: user.age,
+      birthDate: user.birthDate,
       bloodGroup: user.bloodGroup,
       createdAt: user.createdAt
     };
@@ -170,36 +171,74 @@ export const getAllUsers = async (req, res) => {
   }
 }
 
-// Get user by ID (Read)
+/**
+ * Get user by ID
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} User data or error message
+ */
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Input validation
+    if (!id || typeof id !== 'string' || id.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required"
+      });
+    }
+
+    // Check if ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format"
+      });
+    }
 
     const user = await UserRegistrationSchema.getUserById(id);
 
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: "User not found"
       });
     }
 
+    // Remove sensitive data before sending response
+    const { password, ...userData } = user.toObject();
+
     res.status(200).json({
+      success: true,
       message: "User retrieved successfully",
-      user
+      data: userData
     });
   } catch (error) {
     console.error("Get user by ID error:", error);
 
-    // Handle invalid ObjectId
+    // Handle specific error types
     if (error.name === 'CastError') {
       return res.status(400).json({
-        message: "Invalid user ID"
+        success: false,
+        message: "Invalid user ID format"
       });
     }
 
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: "Validation error",
+        error: error.message
+      });
+    }
+
+    // Generic error response
     res.status(500).json({
-      message: "Internal server error",
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+      success: false,
+      message: "Failed to retrieve user",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 }

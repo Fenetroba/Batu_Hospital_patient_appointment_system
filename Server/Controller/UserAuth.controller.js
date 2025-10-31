@@ -1,9 +1,6 @@
 import User from "../Model/UserRegistration.model.js";
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
+import "dotenv/config";
 /**
  * @description Authenticate user and get token
  * @route POST /api/auth/login

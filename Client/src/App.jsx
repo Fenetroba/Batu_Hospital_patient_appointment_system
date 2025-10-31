@@ -82,7 +82,7 @@ const App = () => {
             }
           />
           <Route
-            path="/patients/home"
+            path="/patient/home"
             element={
               <PageProtector allowedRoles={['Patient']}>
                 <PatientsHomePage />

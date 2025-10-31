@@ -17,7 +17,8 @@ import { CreateUser as CreateUserAction, fetchUsers, UpdateUser, DeleteUser, set
 
 const User = () => {
   const dispatch = useDispatch()
-  const { users, loading, error, currentUser } = useSelector((state) => state.user)
+  const { users, loading, error } = useSelector((state) => state.user)
+  const {currentUser}=useSelector((state)=>state.auth)
 
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -283,16 +284,7 @@ const User = () => {
             >
               Admin
             </button>
-            <button
-              onClick={() => handleRoleSwitch('Receptionist')}
-              className={`px-3 py-1 text-xs rounded-full transition-colors ${
-                currentUser?.role === 'Receptionist'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              Receptionist
-            </button>
+           
           </div>
         </div>
       </div>
@@ -347,7 +339,7 @@ const User = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {users.filter(u => u.role !== 'Patient').map((user) => (
+              {users.filter(u => u.role !== 'Patient' && u._id !== currentUser.id).map((user) => (
                 <tr key={user._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm font-medium text-gray-800">{user.fullName}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
