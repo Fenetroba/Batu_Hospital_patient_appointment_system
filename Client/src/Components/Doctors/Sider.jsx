@@ -1,7 +1,6 @@
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import Appointment from "./Appointment";
 import Inboxs from "./Inbox";
-import Patient from "./Patient";
 import Setting from "../AllUsers/Setting";
 import {
   Sidebar,
@@ -32,10 +31,6 @@ const items = [
   {
     title: "Appointments",
     icon: Calendar,
-  },
-  {
-    title: "Find Patients",
-    icon: Search,
   },
   {
     title: "Settings",
@@ -84,11 +79,9 @@ const DoctorsSidebar = () => {
         {OpenFile === "Home" ? (
           <HomePage />
         ) : OpenFile === "Inboxs" ? (
-          <Inbox />
+          <Inboxs />
         ) : OpenFile === "Appointments" ? (
           <Appointment />
-        ) : OpenFile === "Find Patients" ? (
-          <Patient />
         ) : OpenFile === "Settings" ? (
           <Setting />
         ) : <HomePage />}

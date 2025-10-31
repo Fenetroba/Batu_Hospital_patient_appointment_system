@@ -282,7 +282,7 @@ const Appointment = () => {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
                         <h3 className="text-lg font-bold text-gray-800">
                           {appointment.patient}
-                          <span className="ml-2 text-sm font-normal text-gray-500">(Patient)</span>
+                        
                         </h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium border flex items-center gap-1 w-fit ${getStatusColor(appointment.status)}`}>
                           {getStatusIcon(appointment.status)}
