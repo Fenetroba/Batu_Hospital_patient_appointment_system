@@ -7,12 +7,12 @@ const appointmentSchema = new mongoose.Schema({
   },
   patient: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'UserRegistration',
     required: true
   },
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'UserRegistration',
     required: true
   },
   date: {

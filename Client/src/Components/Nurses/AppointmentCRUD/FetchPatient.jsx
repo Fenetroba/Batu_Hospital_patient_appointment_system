@@ -23,7 +23,7 @@ const FetchPatient = ({ patients = [], onSelect, onClose }) => {
   };
 
   return (
-    <div className="bg-[var(--six)] rounded-xl p-4 text-white w-full max-w-xl">
+    <div className="bg-[var(--five)] rounded-xl p-4 text-white w-full max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Select Patient</h3>
@@ -34,7 +34,7 @@ const FetchPatient = ({ patients = [], onSelect, onClose }) => {
         {onClose && (
           <button
             onClick={onClose}
-            className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-sm transition-colors"
+            className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 cursor-pointer text-sm transition-colors"
           >
             Close
           </button>
@@ -72,7 +72,7 @@ const FetchPatient = ({ patients = [], onSelect, onClose }) => {
             {q && (
               <button
                 onClick={() => setQ("")}
-                className="text-blue-400 hover:text-blue-300 text-sm"
+                className="text-blue-400 hover:text-blue-300 text-sm cursor-pointer"
               >
                 Clear search
               </button>

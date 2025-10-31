@@ -42,29 +42,45 @@ export const createAppointment = async (req, res) => {
 // Get all appointments
 export const getAllAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find()
-            .populate('patient', 'name email')
-            .populate('doctor', 'name specialization');
-        
-        res.status(200).json(appointments);
+        const appointments = await Appointment.find({})
+            .populate('patient', 'fullName email')
+            .populate('doctor', 'fullName specialization')
+            .sort({ createdAt: -1 }); // Sort by most recent first
+            
+        res.status(200).json({
+            success: true,
+            count: appointments.length,
+            data: appointments
+        });
     } catch (error) {
         console.error('Error fetching appointments:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Server error',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };
 
 // Get appointment by ID
 export const getAppointmentById = async (req, res) => {
     try {
-        const appointment = await Appointment.findById(req.params.id)
+        const { id } = req.params;
+        
+        // Validate if ID is a valid MongoDB ObjectId
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ success: false, message: 'Invalid appointment ID format' });
+        }
+
+        const appointment = await Appointment.findById(id)
             .populate('patient', 'name email')
             .populate('doctor', 'name specialization');
 
         if (!appointment) {
-            return res.status(404).json({ message: 'Appointment not found' });
+            return res.status(404).json({ success: false, message: 'Appointment not found' });
         }
 
-        res.status(200).json(appointment);
+        res.status(200).json({ success: true, data: appointment });
     } catch (error) {
         console.error('Error fetching appointment:', error);
         res.status(500).json({ message: 'Server error' });

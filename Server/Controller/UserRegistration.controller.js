@@ -180,24 +180,35 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-
+   
     // Input validation
-    if (!id || typeof id !== 'string' || id.trim() === '') {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "User ID is required"
       });
     }
 
-    // Check if ID is a valid MongoDB ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    // Ensure ID is a string
+    const userId = String(id).trim();
+    if (userId === '') {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID format"
+        message: "User ID cannot be empty"
       });
     }
 
-    const user = await UserRegistrationSchema.getUserById(id);
+    // Check if ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      console.error('Invalid user ID format:', userId);
+      return res.status(400).json({
+        success: false,
+        message: `Invalid user ID format. Expected a 24-character hex string, got: ${userId}`,
+        receivedId: userId
+      });
+    }
+
+    const user = await UserRegistrationSchema.getUserById(userId);
 
     if (!user) {
       return res.status(404).json({

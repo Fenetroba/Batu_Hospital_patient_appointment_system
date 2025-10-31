@@ -2,7 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { fetchUsers } from '../../Stores/UserSlice';
+import { deleteAppointment } from '../../Stores/Appointment.slice';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { User, X, Calendar, Plus } from 'lucide-react';
 import FetchPatient from './AppointmentCRUD/FetchPatient';
 import CreateAppointment from './AppointmentCRUD/CreateAppointment';
@@ -10,8 +12,8 @@ import FetchAppointment from './AppointmentCRUD/FetchAppointment';
 import { fetchAppointments } from '@/Stores/Appointment.slice';
 
 const Appointment = () => {
-  const {appointments}=useSelector(state=>state.appointments)
-  console.log(appointments)
+  const { appointments = [], loading: appointmentsLoading } = useSelector(state => state.appointments || {})
+  console.log('Appointments from Redux:', appointments)
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -23,16 +25,26 @@ const Appointment = () => {
   // Check if we're in create mode from URL or state
   
   useEffect(() => {
-    dispatch(fetchAppointments())
-   
-  }, []);
+    const loadAppointments = async () => {
+      try {
+        setLoadingAppointments(true);
+        await dispatch(fetchAppointments()).unwrap();
+      } catch (error) {
+        console.error('Error loading appointments:', error);
+        // Handle error (e.g., show error toast)
+      } finally {
+        setLoadingAppointments(false);
+      }
+    };
 
-  // Fetch appointments from the server
+    loadAppointments();
+  }, [dispatch]);
+
 
 
   // Handle appointment creation success
   const handleAppointmentCreated = (newAppointment) => {
-    setAppointments(prev => [newAppointment, ...prev]);
+    // The Redux store will be updated by the createAppointment thunk
     setSelectedPatient(null);
     navigate('/nurses/appointments');
   };
@@ -54,15 +66,13 @@ const Appointment = () => {
   const handleDeleteAppointment = async (appointment) => {
     if (window.confirm('Are you sure you want to delete this appointment?')) {
       try {
-        // Replace with your actual API call to delete appointment
-        // await fetch(`/api/appointments/${appointment._id}`, { method: 'DELETE' });
-        
-        // Update local state
-        setAppointments(prev => prev.filter(apt => apt._id !== appointment._id));
-        alert('Appointment deleted successfully');
+        // Dispatch delete action
+        await dispatch(deleteAppointment(appointment._id)).unwrap();
+        // The Redux store will be updated by the deleteAppointment thunk
+        toast.success('Appointment deleted successfully');
       } catch (error) {
         console.error('Error deleting appointment:', error);
-        alert('Failed to delete appointment');
+        toast.error(error.message || 'Failed to delete appointment');
       }
     }
   };
@@ -86,6 +96,7 @@ const Appointment = () => {
 
   // Get filtered patients from Redux store
   const { users: patients, loading, error } = useSelector(selectUsers);
+  
 
   // Fetch users when component mounts
   useEffect(() => {
@@ -105,29 +116,7 @@ const Appointment = () => {
   return (
     <div className="min-h-screen bg-[var(--one)] p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <User className="w-6 h-6" />
-            {selectedPatient ? 'Create Appointment' : 'Patient Appointments'}
-          </h2>
-          {selectedPatient ? (
-            <button 
-              onClick={handleCancelAppointment}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-              Cancel
-            </button>
-          ) : (
-            <button 
-              onClick={() => setShowPatientPicker(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              New Appointment
-            </button>
-          )}
-        </div>
+     
 
         {selectedPatient ? (
           <div className="bg-[var(--six)] rounded-xl p-6">
@@ -200,7 +189,12 @@ const Appointment = () => {
                   </button>
                 </div>
                 
-                {patients.length === 0 ? (
+                {appointmentsLoading ? (
+                  <div className="py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-400 text-center">Loading appointments...</p>
+                  </div>
+                ) : patients.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <User className="w-12 h-12 text-gray-400 mb-4" />
                     <h3 className="text-xl font-medium text-white mb-2">No patients found</h3>
@@ -208,10 +202,10 @@ const Appointment = () => {
                   </div>
                 ) : (
                   <FetchAppointment 
-                    appointments={appointments}
+                    appointments={Array.isArray(appointments) ? appointments : []}
                     onEdit={handleEditAppointment}
                     onDelete={handleDeleteAppointment}
-                    loading={loadingAppointments}
+                    loading={appointmentsLoading}
                   />
                 )}
               </div>

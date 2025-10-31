@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -48,7 +49,7 @@ const FetchAppointment = ({appointments, onEdit, onDelete, loading = false }) =>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {appointments.length === 0 ? (
+            {!Array.isArray(appointments) || appointments.length === 0 ? (
               <tr>
                 <td className="px-6 py-8 text-center text-white/50" colSpan={6}>
                   No appointments scheduled yet
@@ -56,10 +57,13 @@ const FetchAppointment = ({appointments, onEdit, onDelete, loading = false }) =>
               </tr>
             ) : (
               appointments.map((apt) => (
-                <tr key={apt.id || apt._id} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-white">{apt.patientName || apt.patient || 'N/A'}</div>
-                    {apt.phone && <div className="text-xs text-white/60">{apt.phone}</div>}
+                
+                <tr key={apt.id || apt._id} className="hover:bg-white/5 transition-colors text-left">
+                  <td className="px-6 py-4 ">
+                    <div className="text-sm font-medium text-white">
+                     {apt.PatientName}
+                    </div>
+                  
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white/90">
                     {formatDate(apt.date)}
@@ -75,20 +79,13 @@ const FetchAppointment = ({appointments, onEdit, onDelete, loading = false }) =>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
-                      {onEdit && (
-                        <button
-                          onClick={() => onEdit(apt)}
-                          className="px-3 py-1 rounded bg-blue-600/30 text-blue-300 hover:bg-blue-600/40 text-xs transition-colors"
-                        >
-                          Edit
-                        </button>
-                      )}
+                      
                       {onDelete && (
                         <button
                           onClick={() => onDelete(apt)}
-                          className="px-3 py-1 rounded bg-red-600/30 text-red-300 hover:bg-red-600/40 text-xs transition-colors"
+                          className="px-3 py-1 rounded bg-red-600/30 cursor-pointer text-white hover:bg-red-600/40 text-xs transition-colors"
                         >
-                          Delete
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       )}
                     </div>

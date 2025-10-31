@@ -32,7 +32,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api", userRouter);
+
+// Request logging middleware
+app.use((req, res, next) => {
+
+  next();
+});
+
+// Mount routes in order of specificity (most specific first)
 app.use("/api/auth", authRouter);
 app.use("/api/appointment", appointmentRouter);
+app.use("/api", userRouter);  // This should be last as it's the most general
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

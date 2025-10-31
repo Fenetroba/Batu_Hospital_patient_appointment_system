@@ -17,11 +17,20 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-   
       const response = await axios.get('/appointment');
-      return response.data;
+      console.log('API Response:', response); // Log the full response
+      // Make sure we're returning an array of appointments
+      const appointments = Array.isArray(response.data) ? response.data : 
+                         (response.data.appointments || response.data.data || []);
+      console.log('Processed appointments:', appointments);
+      return appointments;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch appointments');
+      console.error('API Error:', error.response?.data || error.message);
+      return rejectWithValue({
+        message: error.response?.data?.message || 'Failed to fetch appointments',
+        status: error.response?.status,
+        data: error.response?.data
+      });
     }
   }
 );
@@ -30,7 +39,6 @@ export const createAppointment = createAsyncThunk(
   'appointments/create',
   async (appointmentData, { rejectWithValue }) => {
     try {
-
       const response = await axios.post('/appointment', appointmentData);
       return response.data.appointment;
     } catch (error) {
@@ -45,7 +53,7 @@ export const updateAppointmentStatus = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.patch(
-        `${API_URL}/${id}/status`,
+        `/appointment/${id}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -61,12 +69,31 @@ export const deleteAppointment = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API_URL}/${id}`, {
+      await axios.delete(`/appointment/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to delete appointment');
+    }
+  }
+);
+
+export const fetchAppointmentById = createAsyncThunk(
+  'appointments/fetchById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`/appointment/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data.appointment || response.data;
+    } catch (error) {
+      return rejectWithValue({
+        message: error.response?.data?.message || 'Failed to fetch appointment',
+        status: error.response?.status,
+        data: error.response?.data
+      });
     }
   }
 );
@@ -91,12 +118,17 @@ const appointmentSlice = createSlice({
     });
     builder.addCase(fetchAppointments.fulfilled, (state, action) => {
       state.loading = false;
-      state.appointments = action.payload;
+      state.error = null;
+      // Ensure we're always setting an array
+      state.appointments = Array.isArray(action.payload) ? action.payload : [];
+      console.log('Updated Redux state with appointments:', state.appointments);
     });
     builder.addCase(fetchAppointments.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
-      toast.error(action.payload);
+      state.error = action.payload?.message || 'Failed to fetch appointments';
+      state.appointments = []; // Reset appointments on error
+      console.error('Fetch appointments failed:', action.payload);
+      toast.error(state.error);
     });
 
     // Create Appointment
@@ -141,9 +173,10 @@ const appointmentSlice = createSlice({
       state.error = null;
     });
     builder.addCase(deleteAppointment.fulfilled, (state, action) => {
+      state.appointments = state.appointments.filter(
+        (appointment) => appointment._id !== action.payload
+      );
       state.loading = false;
-      state.appointments = state.appointments.filter(apt => apt._id !== action.payload);
-      toast.success('Appointment deleted successfully');
     });
     builder.addCase(deleteAppointment.rejected, (state, action) => {
       state.loading = false;

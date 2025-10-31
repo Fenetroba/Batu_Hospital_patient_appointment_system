@@ -7,6 +7,7 @@ import PageProtector from "./Components/AllUsers/PageProtecter";
 import DoctorHomePage from "./Page/Doctors/HomePage";
 import Profile from "./Components/AllUsers/Profile";
 import Setting from "./Components/AllUsers/Setting";
+import ViewAppointment from "./Components/Doctors/CRUD APPOINTMENT/ViewAppointment";
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import("./Page/Gusts/HomePage"));
@@ -47,6 +48,7 @@ const App = () => {
             } 
           />
           <Route path="/location" element={<Location />} />
+          <Route path="/doctor/appointments/view/:id" element={<ViewAppointment />} />
 
           {/* Protected routes */}
           <Route
