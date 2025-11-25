@@ -39,33 +39,9 @@ const Footer = () => {
               >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
+           
+           
+           
             </div>
           </div>
 

@@ -1,8 +1,9 @@
-import { Home, Inbox, Settings, User,FileText } from "lucide-react";
+import { Home, Inbox, Settings, User, FileText, Bell } from "lucide-react";
 import Users from "./User";
 import Reports from "./Reports";
 import Inboxs from "./Inbox";
 import Setting from "../AllUsers/Setting";
+import NotificationManager from "./NotificationManager";
 import {
   Sidebar,
   SidebarContent,
@@ -27,12 +28,16 @@ const items = [
     icon: Home,
   },
   {
-    title:"Inbox",
+    title: "Inbox",
     icon: Inbox,
   },
   {
     title: "Users",
     icon: User,
+  },
+  {
+    title: "Notifications",
+    icon: Bell,
   },
   {
     title: "Reports",
@@ -88,6 +93,8 @@ const AdminSidebar = () => {
           <Inboxs />
         ) : OpenFile === "Users" ? (
           <Users />
+        ) : OpenFile === "Notifications" ? (
+          <NotificationManager />
         ) : OpenFile === "Reports" ? (
           <Reports />
         ) : OpenFile === "Settings" ? (

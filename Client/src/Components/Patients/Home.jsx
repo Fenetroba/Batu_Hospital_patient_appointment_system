@@ -2,7 +2,9 @@ import React from 'react'
 
 const PatientHome = () => {
   return (
-    <div>PatientHome</div>
+    <div>
+      
+    </div>
   )
 }
 

@@ -5,6 +5,7 @@ import Footer from './Footer'
 import Language from '@/Components/Language/Language'
 import OurService from './OurService'
 import Impressions from './Impressions'
+import AboutUs from './AboutUs'
 
 const HomePage = ({isAuthenticated, currentUser}) => {
  
@@ -14,6 +15,7 @@ const HomePage = ({isAuthenticated, currentUser}) => {
         <Header currentUser={currentUser} isAuth={isAuthenticated}/>
         <HeroSection/>
         <OurService/>
+        <AboutUs/>
         <Impressions/>
         <Footer/>
     </div>

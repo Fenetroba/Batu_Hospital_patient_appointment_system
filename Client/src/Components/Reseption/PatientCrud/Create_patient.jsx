@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import { useLanguage } from '@/Context/LanguageContext'
-import Language from '@/Components/Language/Language'
 import { toast } from 'sonner'
 import { useDispatch } from 'react-redux'
 import { CreateUser } from '@/Stores/UserSlice'
 
 const Create_patient = () => {
-  const { t } = useLanguage()
+  
   const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
@@ -43,7 +41,7 @@ const Create_patient = () => {
         // Required by backend controller
         fullName: `${formData.firstName} ${formData.lastName}`.trim(),
         email: formData.email,
-        password: 'password',
+        password: 'Ba@1234',
         role: 'Patient',
         // Patient-specific expectations
         address: formData.address,
@@ -86,8 +84,7 @@ const Create_patient = () => {
     <div className="min-h-screen w-full bg-[var(--one)] p-2">
       <div className="">
         <div className="flex items-center justify-between mb-6 bg-[var(--six)] rounded-xl p-4">
-          <h1 className="text-2xl font-bold text-white">{t('registerTitle') || 'Register Patient'}</h1>
-          <Language />
+          <h1 className="text-2xl font-bold text-white">Register Patient</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-[var(--six)] rounded-xl p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -96,7 +93,7 @@ const Create_patient = () => {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            placeholder={t('firstName') || 'First Name'}
+            placeholder="First Name"
             required
           />
           <input
@@ -104,7 +101,7 @@ const Create_patient = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            placeholder={t('lastName') || 'Last Name'}
+            placeholder="Last Name"
             required
           />
           <select
@@ -114,9 +111,9 @@ const Create_patient = () => {
             onChange={handleChange}
             required
           >
-            <option value="" className="text-black">{t('gender') || 'Gender'}</option>
-            <option value="Male" className="text-black">{t('male') || 'Male'}</option>
-            <option value="Female" className="text-black">{t('female') || 'Female'}</option>
+            <option value="" className="text-black">Gender</option>
+            <option value="Male" className="text-black">Male</option>
+            <option value="Female" className="text-black">Female</option>
           </select>
           <input
             type="date"
@@ -124,7 +121,7 @@ const Create_patient = () => {
             name="birthDate"
             value={formData.birthDate}
             onChange={handleChange}
-            placeholder={t('age') || 'Age'}
+            placeholder="Age"
             required
           />
       
@@ -134,7 +131,7 @@ const Create_patient = () => {
             value={formData.bloodGroup}
             onChange={handleChange}
           >
-            <option value="" className="text-black">{t('bloodGroup') || 'Blood Group'}</option>
+            <option value="" className="text-black">Blood Group</option>
             <option value="A+" className="text-black">A+</option>
             <option value="A-" className="text-black">A-</option>
             <option value="B+" className="text-black">B+</option>
@@ -150,14 +147,14 @@ const Create_patient = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder={t('email') || 'Email'}
+            placeholder="Email"
           />
           <input
             className="border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            placeholder={t('phoneNumber') || 'Phone Number'}
+            placeholder="Phone Number"
             required
           />
           <input
@@ -165,7 +162,7 @@ const Create_patient = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            placeholder={t('address') || 'Address'}
+            placeholder="Address"
             required
           />
           <input
@@ -173,14 +170,14 @@ const Create_patient = () => {
             name="emergencyContactName"
             value={formData.emergencyContactName}
             onChange={handleChange}
-            placeholder={t('emergencyContactName') || 'Emergency Contact Name'}
+            placeholder="Emergency Contact Name"
           />
           <input
             className="border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
             name="emergencyContactPhone"
             value={formData.emergencyContactPhone}
             onChange={handleChange}
-            placeholder={t('emergencyContactPhone') || 'Emergency Contact Phone'}
+            placeholder="Emergency Contact Phone"
           />
         
           <div className="md:col-span-2 flex justify-end">
@@ -189,7 +186,7 @@ const Create_patient = () => {
               disabled={isSubmitting}
               className="bg-[var(--one)] text-black font-bold px-6 py-3 rounded-md hover:bg-opacity-90 transition-colors disabled:opacity-50"
             >
-              {isSubmitting ? (t('register') || 'Register') + '...' : t('register') || 'Register'}
+              {isSubmitting ? ('Register') + '...' : 'Register'}
             </button>
           </div>
         </form>

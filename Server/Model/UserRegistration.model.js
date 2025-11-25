@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-
+import jwt from 'jsonwebtoken';
+import "dotenv/config";
 const userRegistrationSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -45,7 +46,6 @@ const userRegistrationSchema = new mongoose.Schema({
     },
     birthDate: {
         type: Date,
-        required: true
     },
     bloodGroup: {
         type: String,
@@ -144,7 +144,13 @@ userRegistrationSchema.methods.comparePassword = async function(candidatePasswor
         throw new Error('Error comparing passwords');
     }
 };
-
+userRegistrationSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign(
+        { id: this._id, role: this.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRE || '30d' }
+    );
+};
 const UserRegistration = mongoose.model('UserRegistration', userRegistrationSchema);
 
 export default UserRegistration;

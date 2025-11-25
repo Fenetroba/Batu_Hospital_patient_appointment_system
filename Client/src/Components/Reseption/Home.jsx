@@ -1,7 +1,8 @@
-import React from "react";
-import Language from "@/Components/Language/Language";
-import { useLanguage } from "@/Context/LanguageContext";
-import { useSelector } from "react-redux";
+import React, { useEffect, useMemo } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import { fetchAppointments } from "@/Stores/Appointment.slice";
+import { fetchUsers } from "@/Stores/UserSlice";
 import {
   LineChart,
   Line,
@@ -11,21 +12,53 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 
-const data = [
-  { name: "Jan", patient: 10, Active: 5 },
-  { name: "Feb", patient: 17, Active: 12 },
-  { name: "Mar", patient: 49, Active: 25 },
-];
-const Color = ["#0088fe", "#00c4ff", "#000000"];
 const ReseptionHome = () => {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.auth);
-  const { t } = useLanguage();
+
   const { users } = useSelector((state) => state.user);
+  const { appointments } = useSelector((state) => state.appointments);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+    dispatch(fetchAppointments());
+  }, [dispatch]);
+
+  // Active patients count (all patients regardless of month)
+  const activePatients = useMemo(() => {
+    return users.filter((u) => u.isActive && u.role === "Patient").length;
+  }, [users]);
+
+  // Today's patients (appointments today)
+  const todayPatients = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    return appointments.filter((apt) => {
+      if (!apt.date) return false;
+      const aptDate = new Date(apt.date).toISOString().split('T')[0];
+      return aptDate === today;
+    }).length;
+  }, [appointments]);
+
+  // Monthly registration stats (total, male, female) based on user.createdAt
+  const monthlyStats = useMemo(() => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const data = months.map((m) => ({ name: m, total: 0, male: 0, female: 0 }));
+    users
+      .filter((u) => u.role === "Patient" && u.createdAt)
+      .forEach((u) => {
+        const date = new Date(u.createdAt);
+        const idx = date.getMonth(); // 0-11
+        if (idx >= 0 && idx < 12) {
+          data[idx].total += 1;
+          if (u.gender === "Male") data[idx].male += 1;
+          else if (u.gender === "Female") data[idx].female += 1;
+        }
+      });
+    return data;
+  }, [users]);
+
   return (
     <div className="min-h-screen w-full bg-[var(--one)] p-6">
       <div className="max-w-6xl mx-auto">
@@ -34,56 +67,38 @@ const ReseptionHome = () => {
             {currentUser?.gender === "Male"
               ? "Mr"
               : currentUser?.gender === "Female"
-              ? "Ms"
-              : "Mr/Ms"}{" "}
-            {currentUser?.fullName}
+                ? "Ms"
+                : "Mr/Ms"}{" "}{currentUser?.fullName}
           </h1>
           <h1 className="text-white">{currentUser?.role}</h1>
-          <Language />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[var(--six)] rounded-xl p-5">
-            <div className="text-sm text-gray-300">
-              <h1>Active Patients</h1>
-            </div>
-            <div className="text-3xl font-bold text-white mt-2">
-              {users.filter((user) => user.isActive && user.role === "Patient").length}
-              
-            </div>
+            <div className="text-sm text-gray-300"><h1>Active Patients</h1></div>
+            <div className="text-3xl font-bold text-white mt-2">{activePatients}</div>
           </div>
-
           <div className="bg-[var(--six)] rounded-xl p-5">
-            <div className="text-sm text-gray-300">
-              <h1>ToDay Patients</h1>
-            </div>
-            <div className="text-3xl font-bold text-white mt-2">
-              {users.filter((user) => user.role === "Patient" && user.isActive).length}
-            </div>
+            <div className="text-sm text-gray-300"><h1>Today's Patients</h1></div>
+            <div className="text-3xl font-bold text-white mt-2">{todayPatients}</div>
           </div>
         </div>
 
-        <div className="">
-          <div className="flex justify-between items-center bg-gradient-to-b from-[var(--six)] to-[var(--five)] rounded-xl p-5">
-            <LineChart width="100%" height={300} data={data}>
-              <Line dataKey="patient" stroke="#ffffdd" strokeWidth={3} />
-              <Line dataKey="Active" stroke="#64e" strokeWidth={2} />
+        {/* Monthly gender registration chart */}
+        <div className="bg-[var(--six)] rounded-xl p-5">
+          <h2 className="text-white mb-4">Patient Registrations per Month</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={monthlyStats}>
               <CartesianGrid strokeDasharray="3 2" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
+              <Line type="monotone" dataKey="total" stroke="#ff7300" name="Total" />
+              <Line type="monotone" dataKey="male" stroke="#0088fe" name="Male" />
+              <Line type="monotone" dataKey="female" stroke="#ff4081" name="Female" />
             </LineChart>
-
-            <PieChart width={300} height={300}>
-              <Pie data={data} dataKey="patient" label>
-                {data.map((item, i) => (
-                  <Cell key={i} fill={Color[i]} />
-                ))}
-                <Tooltip />
-              </Pie>
-            </PieChart>
-          </div>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>

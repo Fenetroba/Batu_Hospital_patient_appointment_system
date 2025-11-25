@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import UserRegistrationSchema from "../Model/UserRegistration.model.js";
 import bcrypt from "bcrypt";
+import UserAuthModel from '../Model/UserAuth.model.js';
+import UserRegistration from '../Model/UserRegistration.model.js';
 
 export const registerUser = async (req, res) => {
   try {
@@ -152,7 +154,7 @@ export const registerUser = async (req, res) => {
     });
   }
 }
-// Get all users (Read)
+// all users (Read)
 export const getAllUsers = async (req, res) => {
   try {
     const users = await UserRegistrationSchema.getUsers();
@@ -378,3 +380,85 @@ export const deleteUser = async (req, res) => {
     });
   }
 }
+export const ChangePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const userId = req.params.userId;
+
+    // 1. Input validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please provide current password, new password, and confirm password' 
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'New password and confirm password do not match' 
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Password must be at least 8 characters long' 
+      });
+    }
+
+    // 2. Find the user with password field
+    const user = await UserRegistration.findById(userId).select('+password');
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found' 
+      });
+    }
+
+    // 3. Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Current password is incorrect' 
+      });
+    }
+
+    // 4. Check if new password is different from current
+    if (currentPassword === newPassword) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'New password must be different from current password' 
+      });
+    }
+
+    // 5. Update password
+    user.password = newPassword;
+    user.isDefaultPassword = false; // Clear the default password flag
+    user.passwordChangedAt = Date.now();
+    
+    await user.save();
+
+    // 6. Generate new JWT token
+    const token = user.getSignedJwtToken();
+
+    // 7. Omit password from response
+    user.password = undefined;
+
+    res.status(200).json({ 
+      success: true,
+      message: 'Password updated successfully',
+      token,
+      user
+    });
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error updating password',
+      error: error.message 
+    });
+  }
+};

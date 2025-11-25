@@ -27,8 +27,6 @@ const PageProtector = ({ allowedRoles = [], children }) => {
 
     // Check if user has required role
     const hasRequiredRole = currentUser?.role && allowedRoles.includes(currentUser.role);
-    console.log(allowedRoles.includes(currentUser.role))
-    
     // If user doesn't have required role, redirect to home
     if (!hasRequiredRole) {
         return <Navigate to="/" replace />;

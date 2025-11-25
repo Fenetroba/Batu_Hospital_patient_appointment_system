@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { User, Mail, Phone, Lock, Bell, Globe, Shield, Eye, EyeOff, Camera, Save, MapPin, Calendar } from 'lucide-react'
+import ChangePassword from './ChangePassword'
 
 const Setting = () => {
   const [activeTab, setActiveTab] = useState('profile')
-  const [showPassword, setShowPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const { currentUser } = useSelector((state) => state.auth || {})
 
-  console.log(currentUser)
 
   // Real user data from backend (prefilled from Redux auth.currentUser)
   const [profileData, setProfileData] = useState({
@@ -271,71 +268,7 @@ const Setting = () => {
           {activeTab === 'security' && (
             <div className="space-y-6">
               {/* Change Password */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Change Password</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Current Password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--six)] focus:border-transparent"
-                      />
-                      <button
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      New Password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                      <input
-                        type={showNewPassword ? 'text' : 'password'}
-                        className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--six)] focus:border-transparent"
-                      />
-                      <button
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Confirm New Password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--six)] focus:border-transparent"
-                      />
-                      <button
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button className="w-full md:w-auto px-6 py-3 bg-[var(--six)] text-white rounded-lg hover:opacity-90 transition-opacity">
-                    Update Password
-                  </button>
-                </div>
-              </div>
+             <ChangePassword/>
 
               {/* Security Settings */}
               <div className="bg-white rounded-xl shadow-sm p-6">

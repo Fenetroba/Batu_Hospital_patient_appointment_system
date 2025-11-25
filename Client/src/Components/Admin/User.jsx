@@ -140,15 +140,7 @@ const User = () => {
     setShowFindModal(false)
   }
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--six)]"></div>
-        </div>
-      </div>
-    )
-  }
+
 
 
   // Get user names for confirmation message
@@ -348,7 +340,7 @@ const User = () => {
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 ">
                     <UpdateUserStatus 
                       userId={user._id} 
                       isActive={user.status === 'Active'}

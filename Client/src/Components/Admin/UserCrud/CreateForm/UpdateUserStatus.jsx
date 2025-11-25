@@ -80,11 +80,12 @@ const UpdateUserStatus = ({ userId, onStatusUpdate }) => {
   };
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 ">
       <Switch 
         checked={isActive}
         onCheckedChange={handleStatusChange}
         disabled={!userId || isLoading}
+        className='cursor-pointer'
       />
     </div>
   );

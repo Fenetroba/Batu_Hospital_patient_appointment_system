@@ -1,6 +1,7 @@
 import express from 'express';
 import { loginUser, logoutUser, getDoctors } from '../Controller/UserAuth.controller.js';
 import { authenticateToken, authorizeRole } from '../Middelware/Protector.js';
+import { ChangePassword } from '../Controller/UserRegistration.controller.js';
 
 const router = express.Router();
 router.post('/login', loginUser);
@@ -44,6 +45,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     }
 });
 
+router.patch('/change-password/:userId', authenticateToken, ChangePassword);
 // Admin only routes
 // Get all doctors or filter by department
 router.get('/users/doctors', authenticateToken, getDoctors);

@@ -6,6 +6,7 @@ const initialState = {
   currentUser: null, // Stores logged-in user data
   token: null, // JWT token for API requests
   isLoading: false, // Loading state for async operations
+  isLoadingPass: false, // Loading state for async operations
   error: null, // Error messages
   isAuthenticated: false, // Boolean flag for auth status
 };
@@ -54,6 +55,27 @@ export const profile = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue("Profile failed");
+    }
+  }
+);
+export const changePassword = createAsyncThunk(
+  'auth/changePassword',
+  async ({ userId, currentPassword, newPassword, confirmPassword }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/auth/change-password/${userId}`,
+        { currentPassword, newPassword, confirmPassword },
+        
+      );
+      return response.data;
+    
+    } catch (error) {
+      // Return error message from server or default message
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to change password'
+      );
     }
   }
 );
@@ -128,6 +150,22 @@ const authSlice = createSlice({
         state.currentUser = null;
         state.isAuthenticated = false;
         state.error = null;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.isLoadingPass = true;
+        state.error = null;
+        state.passwordChanged = false;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isLoadingPass = false;
+        state.passwordChanged = true;
+        state.token = action.payload.token; // Update token if needed
+        state.user = action.payload.user; // Update user data if needed
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoadingPass = false;
+        state.error = action.payload;
+        state.passwordChanged = false;
       });
   },
 });
