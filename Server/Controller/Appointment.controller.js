@@ -3,10 +3,10 @@ import Appointment from '../Model/Appointment.model.js';
 export const createAppointment = async (req, res) => {
     try {
         // Validate request
-        
 
-        const {doctor, date, timeSlot,PatientName,department } = req.body;
-         const PatientId=req.user.id;
+
+        const { doctor, date, timeSlot, PatientName, department, patient } = req.body;
+        const PatientId = patient; // Use patient ID from request body, not logged-in user
         // Check if the slot is already booked
         const existingAppointment = await Appointment.findOne({
             doctor,
@@ -21,7 +21,7 @@ export const createAppointment = async (req, res) => {
 
         // Create new appointment
         const appointment = new Appointment({
-            patient:PatientId,
+            patient: PatientId,
             doctor,
             date,
             timeSlot,
@@ -46,7 +46,7 @@ export const getAllAppointments = async (req, res) => {
             .populate('patient', 'fullName email')
             .populate('doctor', 'fullName specialization')
             .sort({ createdAt: -1 }); // Sort by most recent first
-            
+
         res.status(200).json({
             success: true,
             count: appointments.length,
@@ -54,7 +54,7 @@ export const getAllAppointments = async (req, res) => {
         });
     } catch (error) {
         console.error('Error fetching appointments:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Server error',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -66,7 +66,7 @@ export const getAllAppointments = async (req, res) => {
 export const getAppointmentById = async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Validate if ID is a valid MongoDB ObjectId
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ success: false, message: 'Invalid appointment ID format' });
@@ -107,9 +107,9 @@ export const updateAppointmentStatus = async (req, res) => {
             return res.status(404).json({ message: 'Appointment not found' });
         }
 
-        res.status(200).json({ 
-            message: 'Appointment status updated successfully', 
-            appointment 
+        res.status(200).json({
+            message: 'Appointment status updated successfully',
+            appointment
         });
 
     } catch (error) {

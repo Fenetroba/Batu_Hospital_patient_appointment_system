@@ -15,7 +15,7 @@ const CreateUser = ({ onClose, onSubmit }) => {
     fullName: '',
     email: '',
     role: '',
-    password: '',
+    password: 'Ba@12345',
     gender: '',
     age: '',
     bloodGroup: '',

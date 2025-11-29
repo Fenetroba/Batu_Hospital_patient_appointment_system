@@ -18,7 +18,7 @@ const userRegistrationSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        default: 'Ba@1234'
+        default: 'Ba@12345'
         
     },
     role: {
@@ -150,6 +150,20 @@ userRegistrationSchema.methods.getSignedJwtToken = function() {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRE || '30d' }
     );
+};
+userRegistrationSchema.methods.getResetPasswordToken = function() {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // Hash token and set to resetPasswordToken field
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set expire (10 minutes)
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 const UserRegistration = mongoose.model('UserRegistration', userRegistrationSchema);
 

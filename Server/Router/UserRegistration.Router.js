@@ -1,12 +1,13 @@
 import express from "express";
 import mongoose from 'mongoose';
-import { 
-  registerUser, 
-  getAllUsers, 
-  getUserById, 
-  updateUser, 
+import {
+  registerUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
   deleteUser,
-  updateUserStatus 
+  updateUserStatus,
+  adminResetPassword
 } from "../Controller/UserRegistration.controller.js";
 import { authenticateToken } from "../Middelware/Protector.js";
 
@@ -15,12 +16,12 @@ const router = express.Router();
 // Route parameter validation middleware
 const validateUserId = (req, res, next) => {
   const { id } = req.params;
-  
+
   // Log the full request for debugging
- 
+
   // Convert ID to string and trim whitespace
   const userId = String(id).trim();
-  
+
   // Common route mistakes
   const commonMistakes = {
     'appointment': '/api/appointment',
@@ -30,7 +31,7 @@ const validateUserId = (req, res, next) => {
     'patient': '/api/patients',
     'patients': '/api/patients'
   };
-  
+
   // Check for common route mistakes
   if (commonMistakes[userId.toLowerCase()]) {
     console.error('Common route mistake detected:', {
@@ -39,7 +40,7 @@ const validateUserId = (req, res, next) => {
       referer: req.headers.referer,
       userAgent: req.headers['user-agent']
     });
-    
+
     return res.status(400).json({
       success: false,
       message: `Invalid route. Did you mean to access ${commonMistakes[userId.toLowerCase()]}?`,
@@ -60,7 +61,7 @@ const validateUserId = (req, res, next) => {
       message: `Invalid user ID format. Expected a 24-character hex string, got: ${id}`
     });
   }
-  
+
   next();
 };
 
@@ -75,6 +76,7 @@ router.get("/", getAllUsers);
 router.get("/:id", validateUserId, getUserById);
 router.put("/:id", validateUserId, updateUser);
 router.patch("/:id/status", validateUserId, updateUserStatus);
+router.patch("/reset-password/:id", validateUserId, adminResetPassword);
 router.delete("/:id", validateUserId, deleteUser);
 
 

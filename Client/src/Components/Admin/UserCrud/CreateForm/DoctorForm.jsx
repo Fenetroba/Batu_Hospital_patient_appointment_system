@@ -1,4 +1,20 @@
 import React from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+const SPECIALTIES = [
+    'General',
+    'Cardiology',
+    'Neurology',
+    'Pediatrics',
+    'Orthopedics',
+    'Dermatology'
+];
 
 const DoctorForm = ({ formData, onChange }) => {
   return (
@@ -10,15 +26,21 @@ const DoctorForm = ({ formData, onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-white mb-2">Speciality *</label>
-          <input
-            type="text"
-            name="speciality"
+          <Select
             value={formData.speciality}
-            onChange={onChange}
-            required
-            className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-            placeholder="e.g., Cardiology, Pediatrics"
-          />
+            onValueChange={(value) => onChange({ target: { name: 'speciality', value } })}
+          >
+            <SelectTrigger className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm">
+              <SelectValue placeholder="Select speciality" />
+            </SelectTrigger>
+            <SelectContent>
+              {SPECIALTIES.map((speciality) => (
+                <SelectItem key={speciality} value={speciality}>
+                  {speciality}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>

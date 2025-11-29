@@ -44,30 +44,30 @@ const Reports = () => {
   const weeklyData = useMemo(() => {
     const weeks = [];
     const now = new Date();
-    
+
     for (let i = weeksToShow - 1; i >= 0; i--) {
       const weekStart = startOfWeek(subWeeks(now, i));
       const weekEnd = endOfWeek(weekStart);
       const weekKey = `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
-      
+
       // Filter users created in this week
       const usersThisWeek = users.filter(user => {
         const userDate = new Date(user.createdAt);
         return isWithinInterval(userDate, { start: weekStart, end: weekEnd });
       });
-      
+
       // Filter appointments for this week
       const appointmentsThisWeek = appointments.filter(apt => {
         const aptDate = new Date(apt.date);
         return isWithinInterval(aptDate, { start: weekStart, end: weekEnd });
       });
-      
+
       // Count appointments by status
       const statusCount = appointmentsThisWeek.reduce((acc, apt) => {
         acc[apt.status] = (acc[apt.status] || 0) + 1;
         return acc;
       }, {});
-      
+
       // Group appointments by day for the week
       const daysInWeek = eachDayOfInterval({ start: weekStart, end: weekEnd });
       const dailyData = daysInWeek.map(day => {
@@ -75,7 +75,7 @@ const Reports = () => {
           const aptDate = new Date(apt.date);
           return aptDate.toDateString() === day.toDateString();
         });
-        
+
         return {
           name: format(day, 'EEE'),
           date: format(day, 'yyyy-MM-dd'),
@@ -85,7 +85,7 @@ const Reports = () => {
           cancelled: dayAppointments.filter(a => a.status === 'cancelled').length,
         };
       });
-      
+
       weeks.push({
         name: weekKey,
         weekStart,
@@ -98,19 +98,19 @@ const Reports = () => {
         dailyData
       });
     }
-    
+
     return weeks;
   }, [users, appointments, weeksToShow]);
 
   // Calculate summary statistics
   const summaryStats = useMemo(() => {
     if (weeklyData.length === 0) return [];
-    
+
     const totalUsers = weeklyData.reduce((sum, week) => sum + week.users, 0);
     const totalAppointments = weeklyData.reduce((sum, week) => sum + week.appointments, 0);
     const totalCompleted = weeklyData.reduce((sum, week) => sum + week.completed, 0);
     const totalPending = weeklyData.reduce((sum, week) => sum + week.pending, 0);
-    
+
     return [
       { name: 'Total Users', value: totalUsers, change: 0, icon: '👥' },
       { name: 'Total Appointments', value: totalAppointments, change: 0, icon: '📅' },
@@ -272,9 +272,9 @@ const Reports = () => {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={latestWeekData}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="5 5" />
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    <YAxis diffuseConstant={1}/>
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="appointments" name="Appointments" fill="#8884d8" />

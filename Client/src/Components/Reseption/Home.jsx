@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo } from "react";
-
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAppointments } from "@/Stores/Appointment.slice";
 import { fetchUsers } from "@/Stores/UserSlice";
+import { fetchNotifications } from "@/Stores/notificationSlice";
+import { Bell } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -20,10 +21,12 @@ const ReseptionHome = () => {
 
   const { users } = useSelector((state) => state.user);
   const { appointments } = useSelector((state) => state.appointments);
+  const { notifications = [], loading: notifLoading } = useSelector((state) => state.notifications);
 
   useEffect(() => {
     dispatch(fetchUsers());
     dispatch(fetchAppointments());
+    dispatch(fetchNotifications());
   }, [dispatch]);
 
   // Active patients count (all patients regardless of month)
@@ -81,6 +84,24 @@ const ReseptionHome = () => {
           <div className="bg-[var(--six)] rounded-xl p-5">
             <div className="text-sm text-gray-300"><h1>Today's Patients</h1></div>
             <div className="text-3xl font-bold text-white mt-2">{todayPatients}</div>
+          </div>
+        </div>
+
+        {/* Notification Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2"><Bell className="inline-block mr-2" />Announcements</h2>
+          {notifLoading && <p className="text-gray-500">Loading notifications...</p>}
+          {!notifLoading && notifications.length === 0 && (
+            <p className="text-gray-500">No announcements at the moment.</p>
+          )}
+          <div className="space-y-4">
+            {notifications.map((n) => (
+              <div key={n._id} className={`border rounded-lg p-4 ${n.type === 'alert' ? 'bg-red-100/10 border-red-200' : n.type === 'announcement' ? 'bg-blue-100/10 border-blue-200' : 'bg-green-100/10 border-green-200'}`}>
+                <h3 className="text-lg font-semibold text-gray-800">{n.title}</h3>
+                <p className="text-gray-600 mt-1">{n.message}</p>
+                <p className="text-xs text-gray-500 mt-2">{new Date(n.createdAt).toLocaleDateString()}</p>
+              </div>
+            ))}
           </div>
         </div>
 

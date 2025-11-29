@@ -1,22 +1,26 @@
-import React, { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppointments } from '../../Stores/Appointment.slice'
 import { parseISO, isSameDay, isAfter } from 'date-fns'
 import { logoutUser } from '@/Stores/UserAuthslicer'
 import { Button } from '../ui/button'
-import { LogOut } from 'lucide-react'
+import { LogOut, Bell } from 'lucide-react'
+import { fetchNotifications } from '@/Stores/notificationSlice'
 
 const NurseHome = () => {
   const dispatch = useDispatch()
   const { currentUser } = useSelector((state) => state.auth)
-  const { appointments = [], loading } = useSelector((state) => state.appointments || {})
+  const { appointments = [], loading: appointmentsLoading } = useSelector((state) => state.appointments || {})
+  const { notifications = [], loading: notifLoading } = useSelector((state) => state.notifications)
   const LogoutHandler = () => {
     dispatch(logoutUser());
     navigate("/");
   };
-  // Load appointments if not present
+  // Load appointments and notifications if not present
   useEffect(() => {
     if (!appointments || appointments.length === 0) dispatch(fetchAppointments())
+    dispatch(fetchNotifications())
   }, [appointments, dispatch])
 
   // Helper to parse appointment date
@@ -82,7 +86,7 @@ const NurseHome = () => {
             {currentUser?.gender === 'Male' ? 'Mr' : currentUser?.gender === 'Female' ? 'Ms' : 'Mr/Ms'} {currentUser?.fullName}
           </h1>
           <h1 className="text-white">{currentUser?.role}</h1>
-          <Button className='cursor-pointer px-10 hover:bg-[var(--five)]' onClick={LogoutHandler}>LogOut <LogOut/></Button>
+          <Button className='cursor-pointer px-10 hover:bg-[var(--five)]' onClick={LogoutHandler}>LogOut <LogOut /></Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -99,6 +103,24 @@ const NurseHome = () => {
           <div className="bg-[var(--six)] rounded-xl p-5">
             <div className="text-sm text-gray-300">Total Appointments</div>
             <div className="text-3xl font-bold text-white mt-2">{analytics.totalAppointments}</div>
+          </div>
+        </div>
+
+        {/* Notification Section */}
+        <div className="mt-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4"><Bell className="inline-block mr-2" />Announcements</h2>
+          {notifLoading && <p className="text-gray-500">Loading notifications...</p>}
+          {!notifLoading && notifications.length === 0 && (
+            <p className="text-gray-500">No announcements at the moment.</p>
+          )}
+          <div className="space-y-4">
+            {notifications.map((n) => (
+              <div key={n._id} className={`border rounded-lg p-4 ${n.type === 'alert' ? 'bg-red-100/10 border-red-200' : n.type === 'announcement' ? 'bg-blue-100/10 border-blue-200' : 'bg-green-100/10 border-green-200'}`}>
+                <h3 className="text-lg font-semibold text-gray-800">{n.title}</h3>
+                <p className="text-gray-600 mt-1">{n.message}</p>
+                <p className="text-xs text-gray-500 mt-2">{new Date(n.createdAt).toLocaleDateString()}</p>
+              </div>
+            ))}
           </div>
         </div>
 

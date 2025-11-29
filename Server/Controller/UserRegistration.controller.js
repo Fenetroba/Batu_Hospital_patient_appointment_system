@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
       });
     }
 
- 
+
 
     // Role-specific validation
     if (!fullName || !email || !password) {
@@ -57,7 +57,7 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    if (role === 'Doctor' && (!speciality || !doctorLicense || !experience || !address || !phone )) {
+    if (role === 'Doctor' && (!speciality || !doctorLicense || !experience || !address || !phone)) {
       return res.status(400).json({
         message: "Doctor fields missing: speciality, doctorLicense, experience, address, and phone are required"
       });
@@ -173,16 +173,11 @@ export const getAllUsers = async (req, res) => {
   }
 }
 
-/**
- * Get user by ID
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Object} User data or error message
- */
+
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-   
+
     // Input validation
     if (!id) {
       return res.status(400).json({
@@ -327,7 +322,7 @@ export const updateUserStatus = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating user status:', error);
-    
+
     if (error.name === 'CastError') {
       return res.status(400).json({
         success: false,
@@ -387,49 +382,49 @@ export const ChangePassword = async (req, res) => {
 
     // 1. Input validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Please provide current password, new password, and confirm password' 
+        message: 'Please provide current password, new password, and confirm password'
       });
     }
 
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'New password and confirm password do not match' 
+        message: 'New password and confirm password do not match'
       });
     }
 
     if (newPassword.length < 8) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Password must be at least 8 characters long' 
+        message: 'Password must be at least 8 characters long'
       });
     }
 
     // 2. Find the user with password field
     const user = await UserRegistration.findById(userId).select('+password');
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'User not found' 
+        message: 'User not found'
       });
     }
 
     // 3. Verify current password
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect' 
+        message: 'Current password is incorrect'
       });
     }
 
     // 4. Check if new password is different from current
     if (currentPassword === newPassword) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'New password must be different from current password' 
+        message: 'New password must be different from current password'
       });
     }
 
@@ -437,7 +432,7 @@ export const ChangePassword = async (req, res) => {
     user.password = newPassword;
     user.isDefaultPassword = false; // Clear the default password flag
     user.passwordChangedAt = Date.now();
-    
+
     await user.save();
 
     // 6. Generate new JWT token
@@ -446,7 +441,7 @@ export const ChangePassword = async (req, res) => {
     // 7. Omit password from response
     user.password = undefined;
 
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
       message: 'Password updated successfully',
       token,
@@ -455,10 +450,78 @@ export const ChangePassword = async (req, res) => {
 
   } catch (error) {
     console.error('Error updating password:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error updating password',
-      error: error.message 
+      error: error.message
+    });
+  }
+};
+
+
+export const adminResetPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+
+    // 1. Input validation
+    if (!newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide new password and confirm password'
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password and confirm password do not match'
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 8 characters long'
+      });
+    }
+
+    // 2. Find user
+    const user = await UserRegistrationSchema.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // 3. Update password
+    // The pre-save hook in the model will handle hashing
+    user.password = newPassword;
+    user.isDefaultPassword = false; // Clear default flag if it exists
+    user.passwordChangedAt = Date.now();
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password has been reset successfully'
+    });
+
+  } catch (error) {
+    console.error('Admin reset password error:', error);
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };

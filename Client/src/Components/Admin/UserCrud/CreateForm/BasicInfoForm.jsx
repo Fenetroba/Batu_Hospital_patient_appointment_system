@@ -45,7 +45,8 @@ const BasicInfoForm = ({ formData, onChange }) => {
             onChange={onChange}
             required
             className="w-full px-4 py-3 border text-white border-[var(--one)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/10 backdrop-blur-sm"
-            placeholder="Enter password"
+            placeholder="Ba@1234"
+            disabled
           />
         </div>
 
