@@ -3,6 +3,7 @@ import { useLanguage } from '@/Context/LanguageContext'
 import { useDispatch } from 'react-redux'
 import { UpdateUser } from '@/Stores/UserSlice'
 import { toast } from 'react-toastify'
+import ResetPassword from '@/Components/Admin/ResetPassword'
 
 const EditPatientData = ({ patient, onClose, onSubmit }) => {
   const { t } = useLanguage()
@@ -47,14 +48,15 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
 
   return (
     <div className="p-6 bg-[var(--six)] rounded-xl">
+   
       <h2 className="text-xl font-semibold text-white mb-4">
-        {t('editPatient') || 'Edit Patient'}
+        Edit Patient
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
-              {t('firstName') || 'First Name'}
+            First Name
             </label>
             <input
               type="text"
@@ -67,7 +69,7 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
-              {t('lastName') || 'Last Name'}
+            Last Name
             </label>
             <input
               type="text"
@@ -81,7 +83,7 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('phoneNumber') || 'Phone Number'}
+            Phone Number
           </label>
           <input
             type="tel"
@@ -94,7 +96,7 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('gender') || 'Gender'}
+            Gender
           </label>
           <select
             name="gender"
@@ -103,14 +105,14 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
             className="w-full border border-gray-300 bg-transparent text-white rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
             required
           >
-            <option value="">{t('selectGender') || 'Select Gender'}</option>
-            <option value="Male">{t('male') || 'Male'}</option>
-            <option value="Female">{t('female') || 'Female'}</option>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('email') || 'Email'}
+            Email
           </label>
           <input
             type="email"
@@ -123,7 +125,7 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('emergencyContact') || 'Emergency Contact'}
+            Emergency Contact
           </label>
           <input
             type="tel"
@@ -139,13 +141,13 @@ const EditPatientData = ({ patient, onClose, onSubmit }) => {
             onClick={onClose}
             className="px-4 py-2 border border-gray-500 text-white rounded-md hover:bg-gray-500"
           >
-            {t('cancel') || 'Cancel'}
+        Cancel
           </button>
           <button
             type="submit"
             className="px-4 py-2 bg-[var(--one)] text-black rounded-md hover:bg-[var(--one)]/90"
           >
-            {t('update') || 'Update'}
+            Update
           </button>
         </div>
       </form>

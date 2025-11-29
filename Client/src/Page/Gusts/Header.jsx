@@ -51,19 +51,10 @@ const Header = ({ currentUser, isAuth }) => {
       name: t("aboutUs"),
       subItems: [
         { name: t("location"), path: "/location" },
-        { name: t("information"), path: "/about" },
-        { name: t("ourTeam"), path: "/team" },
+      
       ],
     },
-    {
-      name: t("ourServices"),
-      subItems: [
-        { name: t("specialties"), path: "#/services" },
-        { name: t("appointments"), path: "#/appointments" },
-        { name: t("emergency"), path: "#/emergency" },
-      ],
-    },
-    { name: t("contact"), path: "/location" },
+  
   ];
 
   const handleNavClick = () => {

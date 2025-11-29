@@ -7,6 +7,7 @@ import EditPatientData from './EditPatientData'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers, UpdateUser, DeleteUser } from '@/Stores/UserSlice'
+import ResetPassword from '@/Components/Admin/ResetPassword'
 
 const Fetch_patient = () => {
   const { t } = useLanguage()
@@ -45,7 +46,7 @@ const Fetch_patient = () => {
     )
   }, [query, normalized])
 
-  
+
   const deletePatient = async (id) => {
     await dispatch(DeleteUser(id))
   }
@@ -70,7 +71,7 @@ const Fetch_patient = () => {
       if (patient) {
         const updatedStatus = !(patient.isActive ?? patient.active);
         console.log(updatedStatus)
-      
+
         await dispatch(UpdateUser({
           id,
           userData: { isActive: updatedStatus }
@@ -83,7 +84,7 @@ const Fetch_patient = () => {
   }
 
   return (
-    <div className="bg-[var(--six)] rounded-xl p-4">
+    <div className="bg-[var(--three)] rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-white">{t('patients') || 'Patients'}</h2>
         <Language />
@@ -92,22 +93,22 @@ const Fetch_patient = () => {
       <div className="flex gap-2 mb-4">
         <input
           value={query}
-          onChange={(e)=>setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder={t('searchPatients') || 'Search by name, phone or ID'}
-          className="flex-1 border text-white bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
+          className="flex-1 border  bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
         />
         <button
           className="bg-[var(--one)] text-black font-semibold px-4 py-2 rounded-md"
-          onClick={()=>setQuery('')}
+          onClick={() => setQuery('')}
         >
           {t('clear') || 'Clear'}
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left">
+      <div className=" ">
+        <table className=" text-left overflow-y-auto w-[90vw]">
           <thead>
-            <tr className="text-gray-300">
+            <tr className="text-gray-300 ">
               <th className="py-2 pr-4">{t('patientId') || 'Patient ID'}</th>
               <th className="py-2 pr-4">{t('name') || 'Name'}</th>
               <th className="py-2 pr-4">{t('phoneNumber') || 'Phone Number'}</th>
@@ -116,21 +117,13 @@ const Fetch_patient = () => {
               <th className="py-2 pr-4">{t('emergencyContact') || 'Emergency Contact'}</th>
               <th className="py-2 pr-4">{t('status') || 'Status'}</th>
               <th className="py-2 pr-4">{t('actions') || 'Actions'}</th>
+              <th className="py-2 pr-4">Reset Password</th>
             </tr>
           </thead>
           <tbody>
-            {/* {loading && (
-              <tr>
-                <td colSpan={6} className="py-4 text-gray-300">{t('loading') || 'Loading...'}</td>
-              </tr>
-            )}
-            {!loading && filtered.length === 0 && (
-              <tr>
-                <td colSpan={6} className="py-4 text-gray-300">{t('noResults') || 'No results found.'}</td>
-              </tr>
-            )} */}
+
             {filtered.map((p) => (
-              <tr key={p.id} className="border-t border-[var(--two)] bg-[var(--four)] text-white hover:bg-[var(--three)]">
+              <tr key={p.id} className="border-t border-[var(--two)] text-gray-300 hover:bg-[var(--three)]">
                 <td className="py-2 pr-4">P_{p.id}</td>
                 <td className="py-2 pr-4">{p.fullName || `${p.firstName || ''} ${p.lastName || ''}`}</td>
                 <td className="py-2 pr-4">{p.phone || ''}</td>
@@ -138,15 +131,19 @@ const Fetch_patient = () => {
                 <td className="py-2 pr-4">{p.email}</td>
                 <td className="py-2 pr-4">{p.emergencyContact}</td>
                 <td className="py-2 pr-4 ">
-                  <StatusSwitch  checked={p.active} onChange={()=>toggleStatus(p.id)} />
+                  <StatusSwitch checked={p.active} onChange={() => toggleStatus(p.id)} />
                 </td>
                 <td className="py-2 pr-4">
                   <Actions
                     active={p.active}
                     onEdit={() => editPatient(p)}
-                    onToggleStatus={()=>toggleStatus(p.id)}
-                    onDelete={()=>deletePatient(p.id)}
+                    onToggleStatus={() => toggleStatus(p.id)}
+                    onDelete={() => deletePatient(p.id)}
                   />
+                </td>
+                <td>
+                  {console.log(p.id)}
+                  <ResetPassword userId={p.id}/>
                 </td>
               </tr>
             ))}
@@ -155,7 +152,7 @@ const Fetch_patient = () => {
       </div>
 
       <div className="text-gray-300 text-sm mt-3">
-        { `Showing ${filtered.length} records`}
+        {`Showing ${filtered.length} records`}
       </div>
 
       {showEditModal && (
