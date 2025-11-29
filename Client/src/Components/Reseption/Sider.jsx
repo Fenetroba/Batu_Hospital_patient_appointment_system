@@ -81,7 +81,7 @@ const ReseptionSidebar = () => {
         </SidebarContent>
         <BottomProfile />
       </Sidebar>
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 overflow-x-hidden">
         <SidebarTrigger />
         {OpenFile === "Home" ? (
           <ReseptionHome />

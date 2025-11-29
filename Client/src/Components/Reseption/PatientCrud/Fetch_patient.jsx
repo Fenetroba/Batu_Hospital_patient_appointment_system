@@ -84,18 +84,18 @@ const Fetch_patient = () => {
   }
 
   return (
-    <div className="bg-[var(--three)] rounded-xl p-5">
+    <div className="bg-[var(--three)] rounded-xl p-5 overflow-x-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-white">{t('patients') || 'Patients'}</h2>
         <Language />
       </div>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex w-[90vw] gap-2 mb-4">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('searchPatients') || 'Search by name, phone or ID'}
-          className="flex-1 border  bg-transparent border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
+          className="flex-1 border  bg-transparent border-gray-300  rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[var(--one)]"
         />
         <button
           className="bg-[var(--one)] text-black font-semibold px-4 py-2 rounded-md"
