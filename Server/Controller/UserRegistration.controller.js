@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import UserRegistrationSchema from "../Model/UserRegistration.model.js";
 import bcrypt from "bcrypt";
-import UserAuthModel from '../Model/UserAuth.model.js';
 import UserRegistration from '../Model/UserRegistration.model.js';
 
 export const registerUser = async (req, res) => {
