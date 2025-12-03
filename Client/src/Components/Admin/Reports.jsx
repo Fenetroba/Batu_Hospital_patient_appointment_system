@@ -81,7 +81,7 @@ const Reports = () => {
           date: format(day, 'yyyy-MM-dd'),
           appointments: dayAppointments.length,
           completed: dayAppointments.filter(a => a.status === 'completed').length,
-          pending: dayAppointments.filter(a => a.status === 'pending').length,
+          pending: dayAppointments.filter(a => a.status === 'scheduled').length,
           cancelled: dayAppointments.filter(a => a.status === 'cancelled').length,
         };
       });
@@ -93,7 +93,7 @@ const Reports = () => {
         users: usersThisWeek.length,
         appointments: appointmentsThisWeek.length,
         completed: statusCount.completed || 0,
-        pending: statusCount.pending || 0,
+        scheduled: statusCount.scheduled || 0,
         cancelled: statusCount.cancelled || 0,
         dailyData
       });
@@ -109,7 +109,7 @@ const Reports = () => {
     const totalUsers = weeklyData.reduce((sum, week) => sum + week.users, 0);
     const totalAppointments = weeklyData.reduce((sum, week) => sum + week.appointments, 0);
     const totalCompleted = weeklyData.reduce((sum, week) => sum + week.completed, 0);
-    const totalPending = weeklyData.reduce((sum, week) => sum + week.pending, 0);
+    const totalPending = weeklyData.reduce((sum, week) => sum + week.scheduled, 0);
 
     return [
       { name: 'Total Users', value: totalUsers, change: 0, icon: '👥' },
@@ -205,12 +205,11 @@ const Reports = () => {
                 <LineChart data={weeklyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                  <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                  <YAxis/>
+                
                   <Tooltip />
                   <Legend />
                   <Line
-                    yAxisId="left"
                     type="monotone"
                     dataKey="appointments"
                     name="Appointments"
@@ -220,7 +219,6 @@ const Reports = () => {
                     activeDot={{ r: 6 }}
                   />
                   <Line
-                    yAxisId="right"
                     type="monotone"
                     dataKey="users"
                     name="New Users"
@@ -244,22 +242,22 @@ const Reports = () => {
                     <Pie
                       data={[
                         { name: 'Completed', value: weeklyData[0]?.completed || 0 },
-                        { name: 'Pending', value: weeklyData[0]?.pending || 0 },
-                        { name: 'Cancelled', value: weeklyData[0]?.cancelled || 0 },
+                        { name: 'scheduled', value: weeklyData[0]?.scheduled || 0 },
+                        { name: 'cancelled', value: weeklyData[0]?.cancelled || 0 },
                       ]}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
                       outerRadius={80}
-                      paddingAngle={5}
+                      paddingAngle={7}
                       dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {['#00C49F', '#FFBB28', '#FF8042'].map((color, index) => (
+                      {['#00C49F', '#5e640cff', '#ec1f1fff'].map((color, index) => (
                         <Cell key={`cell-${index}`} fill={color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value} appointments`, 'Count']} />
+                    <Tooltip  formatter={(value) => [`${value}  appointments`, 'Count']}  />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
@@ -274,8 +272,8 @@ const Reports = () => {
                   <BarChart data={latestWeekData}>
                     <CartesianGrid strokeDasharray="5 5" />
                     <XAxis dataKey="name" />
-                    <YAxis diffuseConstant={1}/>
-                    <Tooltip />
+                    <YAxis tickCount={1}/>
+                    <Tooltip formatter={(value) => [`${value}  appointments`, 'Count']} />
                     <Legend />
                     <Bar dataKey="appointments" name="Appointments" fill="#8884d8" />
                     <Bar dataKey="completed" name="Completed" fill="#00C49F" />
@@ -294,11 +292,11 @@ const Reports = () => {
                 <BarChart data={weeklyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis />
+                  <YAxis tickCount={1}/>
                   <Tooltip />
                   <Legend />
                   <Bar dataKey="completed" name="Completed" fill="#00C49F" />
-                  <Bar dataKey="pending" name="Pending" fill="#FFBB28" />
+                  <Bar dataKey="scheduled" name="scheduled" fill="#FFBB28" />
                   <Bar dataKey="cancelled" name="Cancelled" fill="#FF8042" />
                 </BarChart>
               </ResponsiveContainer>

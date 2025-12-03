@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMessagesBetweenUsers, sendMessage, addLocalMessage, markMessagesRead, updateLocalMessage } from '@/Stores/messageSlice'
+import { fetchMessagesBetweenUsers, sendMessage, addLocalMessage, markMessagesRead, updateLocalMessage, clearUnreadCount } from '@/Stores/messageSlice'
 import { io } from 'socket.io-client'
 import { Check, CheckCheck, X } from 'lucide-react'
 import MessageOptions from '../Common/MessageOptions'
@@ -72,6 +72,8 @@ const Chatfield = ({ user }) => {
             dispatch(fetchMessagesBetweenUsers({ userA: currentUser.id, userB: user._id }))
             // Mark messages as read when opening chat
             dispatch(markMessagesRead({ from: user._id }))
+            // Clear unread count
+            dispatch(clearUnreadCount(user._id))
             setEditingMessage(null)
             setText('')
         }

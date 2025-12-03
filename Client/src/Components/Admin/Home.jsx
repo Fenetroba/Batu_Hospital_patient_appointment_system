@@ -24,7 +24,7 @@ const AdminHome = () => {
       icon: Calendar,
       color: "bg-green-500",
     },
-    { title: "Reports", value: "0", icon: FileText, color: "bg-purple-500" },
+   
     {
       title: "Active Now",
       value: users

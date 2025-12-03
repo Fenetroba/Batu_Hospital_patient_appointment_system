@@ -113,7 +113,7 @@ const Footer = () => {
                 <Clock className="w-5 h-5 text-[var(--two)] flex-shrink-0 mt-1" />
                 <span className="text-gray-300">
                   Emergency: 24/7<br />
-                  Outpatient: Mon-Fri 8AM-5PM
+                  Outpatient: Mon-Fri 2AM-11PM
                 </span>
               </li>
             </ul>
@@ -126,17 +126,7 @@ const Footer = () => {
             <p className="text-gray-300 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} {t('copyright')}
             </p>
-            <div className="flex gap-6 text-sm">
-              <Link to="/privacy" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                {t('privacyPolicy')}
-              </Link>
-              <Link to="/terms" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                {t('termsOfService')}
-              </Link>
-              <Link to="/contact" className="text-gray-300 hover:text-[var(--two)] transition-colors">
-                {t('contact')}
-              </Link>
-            </div>
+          
           </div>
         </div>
       </div>

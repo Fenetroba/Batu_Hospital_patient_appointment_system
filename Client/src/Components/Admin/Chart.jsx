@@ -64,7 +64,7 @@ const Chart = () => {
         users: usersThisMonth.length,
         appointments: appointmentsThisMonth.length,
         completed: statusCount.completed || 0,
-        pending: statusCount.pending || 0,
+        pending: statusCount.scheduled || 0,
         cancelled: statusCount.cancelled || 0,
       });
     }
@@ -136,12 +136,12 @@ const Chart = () => {
               <BarChart data={[chartData[chartData.length - 1]]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <RechartsXAxis dataKey="name" />
-                <RechartsYAxis />
+                <RechartsYAxis tickCount={1} /> 
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="completed" name="Completed" fill="#00C49F" />
                 <Bar dataKey="pending" name="Pending" fill="#FFBB28" />
-                <Bar dataKey="cancelled" name="Cancelled" fill="#FF8042" />
+                <Bar dataKey="cancelled" name="cancelled" fill="#FF8042" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -154,7 +154,7 @@ const Chart = () => {
               <LineChart data={weeklyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis />
+                <YAxis tickCount={1} /> 
                 <Tooltip />
                 <Legend />
                 <Line 

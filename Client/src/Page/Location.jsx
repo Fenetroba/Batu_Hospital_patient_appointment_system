@@ -67,16 +67,7 @@ const Location = () => {
                 <div className="bg-[var(--five)] p-3 rounded-lg">
                   <Phone className="w-6 h-6 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-[var(--six)] mb-2">
-                    {t('phone')}
-                  </h3>
-                  <p className="text-gray-600">
-                    Emergency: +251 22 XXX XXXX<br />
-                    Reception: +251 22 XXX XXXX<br />
-                    Appointments: +251 22 XXX XXXX
-                  </p>
-                </div>
+                
               </div>
             </div>
 
@@ -92,7 +83,7 @@ const Location = () => {
                   </h3>
                   <p className="text-gray-600">
                     info@batuhospital.et<br />
-                    appointments@batuhospital.et
+                  
                   </p>
                 </div>
               </div>
@@ -110,8 +101,8 @@ const Location = () => {
                   </h3>
                   <p className="text-gray-600">
                     Emergency: 24/7<br />
-                    Outpatient: Mon-Fri 8:00 AM - 5:00 PM<br />
-                    Saturday: 8:00 AM - 12:00 PM<br />
+                    Outpatient: Mon-Fri 2:00 AM - 11:00 PM<br />
+                    Saturday: 2:00 AM - 11:00 PM<br />
                     Sunday: Closed
                   </p>
                 </div>
@@ -120,32 +111,7 @@ const Location = () => {
           </div>
         </div>
 
-        {/* Directions Section */}
-        <div className="mt-12 bg-[var(--six)] rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-[var(--one)] mb-6">
-            {t('howToGetHere')}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">{t('byCar')}</h3>
-              <p className="text-gray-600">
-                Free parking available on-site. Follow signs to the main entrance.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">{t('byPublicTransport')}</h3>
-              <p className="text-gray-600">
-                Several bus routes stop near the hospital. Check local schedules.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold text-[var(--five)] mb-2">{t('byTaxi')}</h3>
-              <p className="text-gray-600">
-                Taxis are readily available. Show the driver this address.
-              </p>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
     <Footer />

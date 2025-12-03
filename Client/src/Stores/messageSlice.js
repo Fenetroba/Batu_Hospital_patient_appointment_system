@@ -7,7 +7,8 @@ const initialState = {
   messages: [],
   loading: false,
   error: null,
-  currentConversationId: null
+  currentConversationId: null,
+  unreadCounts: {} // { userId: count }
 }
 
 // Fetch recent conversations for the authenticated user
@@ -132,6 +133,14 @@ const messageSlice = createSlice({
     },
     clearError(state) {
       state.error = null
+    },
+    incrementUnreadCount(state, action) {
+      const userId = action.payload
+      state.unreadCounts[userId] = (state.unreadCounts[userId] || 0) + 1
+    },
+    clearUnreadCount(state, action) {
+      const userId = action.payload
+      state.unreadCounts[userId] = 0
     }
   },
   extraReducers: (builder) => {
@@ -229,6 +238,6 @@ const messageSlice = createSlice({
   }
 })
 
-export const { setCurrentConversation, addLocalMessage, updateLocalMessage, clearMessages, clearError } = messageSlice.actions
+export const { setCurrentConversation, addLocalMessage, updateLocalMessage, clearMessages, clearError, incrementUnreadCount, clearUnreadCount } = messageSlice.actions
 
 export default messageSlice.reducer
