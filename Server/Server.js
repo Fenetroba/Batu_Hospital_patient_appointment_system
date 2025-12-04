@@ -19,21 +19,22 @@ const app = express();
 
 // ✅ FIXED CORS CONFIG
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      "https://batu-hospital-patient-appointment-system-158f.onrender.com",
-      "http://localhost:3000"
-    ];
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "https://batu-hospital-patient-appointment-system-158f.onrender.com",
+            "https://batu-hospital-patient-appointment-system.onrender.com",
+            "http://localhost:5173"
+        ];
 
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // ✅ Must call callback
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // ✅ Must call callback
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
@@ -54,5 +55,5 @@ app.set("io", io);
 
 // ✅ FIXED RENDER PORT BINDING
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server + sockets running on port ${PORT}`);
+    console.log(`✅ Server + sockets running on port ${PORT}`);
 });

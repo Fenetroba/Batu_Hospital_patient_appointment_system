@@ -13,6 +13,7 @@ export const fetchNotifications = createAsyncThunk(
             })
             return response.data.data
         } catch (error) {
+            console.log(error)
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch notifications')
         }
     }
@@ -23,6 +24,7 @@ export const createNotification = createAsyncThunk(
     'notifications/create',
     async (notificationData, { rejectWithValue }) => {
         try {
+
             const token = localStorage.getItem('token')
             const response = await axios.post(API_URL, notificationData, {
                 headers: { Authorization: `Bearer ${token}` },
