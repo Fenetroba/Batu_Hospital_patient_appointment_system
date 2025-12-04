@@ -20,6 +20,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             'https://batu-hospital-patient-appointment-system-158f.onrender.com',
+            'https://batu-hospital-patient-appointment-system-158f.onrender.com/',
             // Add other allowed origins here if needed
         ];
 
