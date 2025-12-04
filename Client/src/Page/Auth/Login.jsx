@@ -44,13 +44,7 @@ const Login = ({user,isAuthenticated}) => {
 
         // Navigate based on user role
         const userRole = result.payload.user?.role;
-        console.log('User role after login:', userRole);
-        
-        // Store user data in local storage if needed
-        if (result.payload.user) {
-          localStorage.setItem('user', JSON.stringify(result.payload.user));
-        }
-
+       
         // Navigate based on user role
         const roleRoutes = {
           'Admin': '/admin/home',

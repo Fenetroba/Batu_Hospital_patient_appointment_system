@@ -9,7 +9,7 @@ import "dotenv/config";
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-    
+
         // Validate input
         if (!email || !password) {
             return res.status(400).json({
@@ -20,7 +20,7 @@ export const loginUser = async (req, res) => {
 
         // Find user by email
         const user = await User.findOne({ email }).select('+password');
-        
+
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -84,12 +84,12 @@ export const loginUser = async (req, res) => {
 
         // Set cookie options
         const cookieOptions = {
-             httpOnly: true,
+            httpOnly: true,
             secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      sameSite: 'none',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: 'none',
             path: '/',
-            
+
         };
 
         // Set the cookie in the response
@@ -118,7 +118,7 @@ export const loginUser = async (req, res) => {
             workingHours: user.workingHours,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-            
+
         };
 
         res.status(200).json({
@@ -145,7 +145,7 @@ export const loginUser = async (req, res) => {
 export const getDoctors = async (req, res) => {
     try {
         const { department } = req.query;
-        
+
         // Build query
         const query = { role: 'Doctor', isActive: true };
         if (department) {
@@ -175,7 +175,12 @@ export const getDoctors = async (req, res) => {
 export const logoutUser = async (req, res) => {
     try {
         // Clear the token cookie
-        res.clearCookie('token');
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            path: '/'
+        });
         res.status(200).json({
             success: true,
             message: "Logout successful"

@@ -41,6 +41,8 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post('/auth/logout');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -65,15 +67,15 @@ export const changePassword = createAsyncThunk(
       const response = await axiosInstance.patch(
         `/auth/change-password/${userId}`,
         { currentPassword, newPassword, confirmPassword },
-        
+
       );
       return response.data;
-    
+
     } catch (error) {
       // Return error message from server or default message
       return rejectWithValue(
-        error.response?.data?.message || 
-        error.message || 
+        error.response?.data?.message ||
+        error.message ||
         'Failed to change password'
       );
     }

@@ -5,10 +5,12 @@ import { fetchUsers } from '@/Stores/UserSlice'
 import { incrementUnreadCount, clearUnreadCount } from '@/Stores/messageSlice'
 import { io } from 'socket.io-client'
 import Chatfield from './Chatfield'
+
+// Singleton socket connection
 let socket
 const getSocket = (token) => {
   if (!socket) {
-    socket = io('https://batu-hospital-patient-appointment-system.onrender.com', {
+    socket = io('http://localhost:5000', {
       auth: { token },
       withCredentials: true
     })

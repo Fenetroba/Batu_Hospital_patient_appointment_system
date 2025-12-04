@@ -17,7 +17,7 @@ export default function initSocket(server) {
   const io = new Server(server, {
     cors: {
       origin: [
-        'https://batu-hospital-patient-appointment-system-158f.onrender.com'
+        'http://localhost:5173'
       ],
       credentials: true
     }
