@@ -2,8 +2,6 @@ import React from 'react';
 
 
 const AboutUs = () => {
-  // Health professionals data
-
 
   return (
     <div className="w-full bg-[var(--one)] sm:p-16">
