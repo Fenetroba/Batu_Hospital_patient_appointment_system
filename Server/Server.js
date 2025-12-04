@@ -19,7 +19,7 @@ const app = express();
 const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
-            'http://localhost:5173',
+            'https://batu-hospital-patient-appointment-system-158f.onrender.com',
             // Add other allowed origins here if needed
         ];
 
