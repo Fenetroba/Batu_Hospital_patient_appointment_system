@@ -10,7 +10,7 @@ import Chatfield from './Chatfield'
 let socket
 const getSocket = (token) => {
   if (!socket) {
-    socket = io('http://localhost:5000', {
+    socket = io('https://batu-hospital-patient-appointment-system.onrender.com', {
       auth: { token },
       withCredentials: true
     })
