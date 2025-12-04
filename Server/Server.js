@@ -7,48 +7,52 @@ import authRouter from "./Router/UserAuth.router.js";
 import appointmentRouter from "./Router/Appointment.router.js";
 import messageRouter from "./Router/Message.router.js";
 import notificationRouter from "./Router/Notification.router.js";
-import http from 'http'
+import http from "http";
 import cookieParser from "cookie-parser";
-import initSocket from './Lib/Socket.js'
+import initSocket from "./Lib/Socket.js";
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 connectDB();
+
 const app = express();
-// CORS configuration
+
+// ✅ FIXED CORS CONFIG
 const corsOptions = {
-    origin: function (origin, callback) {
-        const allowedOrigins = [
-            'https://batu-hospital-patient-appointment-system-158f.onrender.com',
-        ];
-    },
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    exposedHeaders: ['set-cookie']
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "https://batu-hospital-patient-appointment-system-158f.onrender.com",
+      "http://localhost:3000"
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // ✅ Must call callback
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-// Request logging middleware
-app.use((req, res, next) => {
-
-    next();
-});
-
-// Mount routes in order of specificity (most specific first)
+// ROUTES
 app.use("/api/auth", authRouter);
 app.use("/api/appointment", appointmentRouter);
-// Mount message router (requires auth where applicable)
-app.use('/api/message', messageRouter)
-app.use('/api/notification', notificationRouter)
-app.use("/api", userRouter);  // This should be last as it's the most general
+app.use("/api/message", messageRouter);
+app.use("/api/notification", notificationRouter);
+app.use("/api", userRouter);
 
-// Create HTTP server and attach socket.io
-const server = http.createServer(app)
-const io = initSocket(server)
-app.set('io', io)
+// HTTP + SOCKET
+const server = http.createServer(app);
+const io = initSocket(server);
+app.set("io", io);
 
-server.listen(PORT, () => console.log(`Server + sockets running on port ${PORT}`));
+// ✅ FIXED RENDER PORT BINDING
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server + sockets running on port ${PORT}`);
+});
