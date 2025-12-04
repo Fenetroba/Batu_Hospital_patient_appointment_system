@@ -84,12 +84,12 @@ export const loginUser = async (req, res) => {
 
         // Set cookie options
         const cookieOptions = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Use secure in production
-            sameSite: 'lax', // Changed from 'strict' to 'lax' for better cross-site compatibility
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+             httpOnly: true,
+            secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'none',
             path: '/',
-            domain: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : undefined // Set your domain in production
+            
         };
 
         // Set the cookie in the response

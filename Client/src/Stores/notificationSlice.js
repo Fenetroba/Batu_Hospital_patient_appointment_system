@@ -6,7 +6,7 @@ export const fetchNotifications = createAsyncThunk(
     'notifications/fetchAll',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(API_URL, {
+            const response = await axios.get('/notification', {
                 withCredentials: true
             })
             return response.data.data
@@ -22,7 +22,7 @@ export const createNotification = createAsyncThunk(
     async (notificationData, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token')
-            const response = await axios.post(API_URL, notificationData, {
+            const response = await axios.post('/notification', notificationData, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             })
@@ -39,7 +39,7 @@ export const updateNotification = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token')
-            const response = await axios.put(`${API_URL}/${id}`, data, {
+            const response = await axios.put(`${'/notification'}/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             })
@@ -56,7 +56,7 @@ export const deleteNotification = createAsyncThunk(
     async (id, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token')
-            await axios.delete(`${API_URL}/${id}`, {
+            await axios.delete(`${'/notification'}/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             })
