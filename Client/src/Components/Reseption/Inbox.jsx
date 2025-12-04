@@ -5,8 +5,6 @@ import { fetchUsers } from '@/Stores/UserSlice'
 import { incrementUnreadCount, clearUnreadCount } from '@/Stores/messageSlice'
 import { io } from 'socket.io-client'
 import Chatfield from './Chatfield'
-
-// Singleton socket connection
 let socket
 const getSocket = (token) => {
   if (!socket) {
