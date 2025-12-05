@@ -70,7 +70,7 @@ const Fetch_patient = () => {
       const patient = users.find(p => (p._id || p.id) === id);
       if (patient) {
         const updatedStatus = !(patient.isActive ?? patient.active);
-        console.log(updatedStatus)
+   
 
         await dispatch(UpdateUser({
           id,
@@ -142,7 +142,7 @@ const Fetch_patient = () => {
                   />
                 </td>
                 <td>
-                  {console.log(p.id)}
+         
                   <ResetPassword userId={p.id}/>
                 </td>
               </tr>

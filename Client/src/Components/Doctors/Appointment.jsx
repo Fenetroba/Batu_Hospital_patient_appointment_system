@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Calendar, Clock, User, Phone, Mail, MapPin, 
-  Filter, Search, CheckCircle, XCircle, 
+import {
+  Calendar, Clock, User, Phone, Mail, MapPin,
+  Filter, Search, CheckCircle, XCircle,
   AlertCircle, Eye, Edit, Trash2, ChevronDown, Check
 } from 'lucide-react';
 import { Fragment, useRef, useEffect } from 'react';
@@ -19,8 +19,8 @@ const Appointment = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (openDropdown && dropdownRefs.current[openDropdown] && 
-          !dropdownRefs.current[openDropdown].contains(event.target)) {
+      if (openDropdown && dropdownRefs.current[openDropdown] &&
+        !dropdownRefs.current[openDropdown].contains(event.target)) {
         setOpenDropdown(null);
       }
     };
@@ -39,7 +39,7 @@ const Appointment = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const statusOptions = [
     { value: 'scheduled', label: 'Pending', icon: Clock, color: 'yellow' },
     { value: 'completed', label: 'Confirmed', icon: CheckCircle, color: 'green' },
@@ -78,10 +78,9 @@ const Appointment = () => {
 
   // Process appointments data
   const processAppointments = appointments.map(apt => {
-    {console.log(apt.PatientName,)}
     // Extract patient data (handles both nested and flat structures)
     const patientData = {
-      name: apt.PatientName,   
+      name: apt.PatientName,
     };
 
     // Extract creator (nurse) data
@@ -109,7 +108,7 @@ const Appointment = () => {
   // Tabs configuration
   const tabs = [
     { id: 'all', label: 'All', count: processAppointments.length },
-    
+
     { id: 'scheduled', label: 'Pending', count: processAppointments.filter(a => a.status === 'scheduled').length },
     { id: 'completed', label: 'Completed', count: processAppointments.filter(a => a.status === 'completed').length },
     { id: 'cancelled', label: 'Cancelled', count: processAppointments.filter(a => a.status === 'cancelled').length }
@@ -117,7 +116,7 @@ const Appointment = () => {
 
   // Helper functions
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'scheduled': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'completed': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
@@ -126,8 +125,8 @@ const Appointment = () => {
   };
 
   const getStatusIcon = (status) => {
-    switch(status) {
-     
+    switch (status) {
+
       case 'scheduled': return <AlertCircle className="w-4 h-4" />;
       case 'completed': return <CheckCircle className="w-4 h-4" />;
       case 'cancelled': return <XCircle className="w-4 h-4" />;
@@ -140,8 +139,8 @@ const Appointment = () => {
     const matchesTab = selectedTab === 'all' || appointment.status === selectedTab;
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch = appointment.patient?.toLowerCase().includes(searchLower) ||
-                         appointment.reason?.toLowerCase().includes(searchLower) ||
-                         appointment.department?.toLowerCase().includes(searchLower);
+      appointment.reason?.toLowerCase().includes(searchLower) ||
+      appointment.department?.toLowerCase().includes(searchLower);
     const matchesDate = !selectedDate || appointment.date === selectedDate;
     return matchesTab && matchesSearch && matchesDate;
   });
@@ -169,7 +168,7 @@ const Appointment = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[var(--six)] mb-2">Appointments</h1>
-     
+
       </div>
 
       {/* Stats */}
@@ -217,7 +216,7 @@ const Appointment = () => {
 
           {/* Clear Filters */}
           {(searchQuery || selectedDate) && (
-            <button 
+            <button
               onClick={() => {
                 setSearchQuery('');
                 setSelectedDate('');
@@ -237,16 +236,14 @@ const Appointment = () => {
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`px-4 py-3 font-medium text-sm whitespace-nowrap transition-colors ${
-                selectedTab === tab.id
+              className={`px-4 py-3 font-medium text-sm whitespace-nowrap transition-colors ${selectedTab === tab.id
                   ? 'text-[var(--six)] border-b-2 border-[var(--six)]'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               {tab.label}
-              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                selectedTab === tab.id ? 'bg-[var(--six)] text-white' : 'bg-gray-100 text-gray-600'
-              }`}>
+              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${selectedTab === tab.id ? 'bg-[var(--six)] text-white' : 'bg-gray-100 text-gray-600'
+                }`}>
                 {tab.count}
               </span>
             </button>
@@ -271,42 +268,42 @@ const Appointment = () => {
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Patient Avatar */}
                     <div className="w-14 h-14 bg-[var(--six)] rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                      {appointment.patient 
+                      {appointment.patient
                         ? appointment.patient.split(' ').map(n => n[0] || '').join('').toUpperCase() || '?'
                         : '?'}
                     </div>
-                    
+
                     {/* Patient Details */}
                     <div className="flex-1">
                       {/* Patient Name and Status */}
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
                         <h3 className="text-lg font-bold text-gray-800">
                           {appointment.patient}
-                        
+
                         </h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium border flex items-center gap-1 w-fit ${getStatusColor(appointment.status)}`}>
                           {getStatusIcon(appointment.status)}
                           {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
                         </span>
                       </div>
-                      
+
                       {/* Creator (Nurse) Info */}
                       {appointment.creator && appointment.creator !== 'N/A' && (
                         <div className="flex items-center text-sm text-gray-600 mb-3">
                           <span className="flex items-center">
                             <User className="w-3.5 h-3.5 mr-1.5" />
-                            Created by: {appointment.creator} 
+                            Created by: {appointment.creator}
                             {appointment.creatorRole && ` (${appointment.creatorRole})`}
                           </span>
                         </div>
                       )}
-                      
+
                       {/* Appointment Reason */}
                       <p className="text-sm text-gray-600 mb-4">{appointment.reason}</p>
-                      
+
                       {/* Appointment Details Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-500">
-                       
+
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-gray-400" />
                           <span>{appointment.department}</span>
@@ -330,16 +327,16 @@ const Appointment = () => {
                     {appointment.type}
                   </span>
                   <div className="flex gap-2">
-                    <button 
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
+                    <button
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="View Details"
-                      onClick={() => navigate(`/doctor/appointments/view/${appointment._id}`)}
+                      onClick={() => navigate(`/doctor/appointments/view/${appointment.id}`)}
                     >
                       <Eye className="w-5 h-5" />
                     </button>
                     <div className="relative inline-block text-left" ref={el => dropdownRefs.current[appointment.id] = el}>
                       <div>
-                        <button 
+                        <button
                           type="button"
                           className="inline-flex items-center p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors focus:outline-none"
                           title="Update Status"
@@ -359,18 +356,16 @@ const Appointment = () => {
                                   handleStatusUpdate(appointment.id, option.value);
                                   setOpenDropdown(null);
                                 }}
-                                className={`group flex w-full items-center px-4 py-2 text-sm ${
-                                  appointment.status === option.value 
-                                    ? 'bg-gray-100 text-gray-900' 
+                                className={`group flex w-full items-center px-4 py-2 text-sm ${appointment.status === option.value
+                                    ? 'bg-gray-100 text-gray-900'
                                     : 'text-gray-700 hover:bg-gray-50'
-                                }`}
+                                  }`}
                               >
-                                <option.icon 
-                                  className={`mr-2 h-4 w-4 ${
-                                    option.color === 'green' ? 'text-green-500' :
-                                    option.color === 'red' ? 'text-red-500' : 'text-yellow-500'
-                                  }`} 
-                                  aria-hidden="true" 
+                                <option.icon
+                                  className={`mr-2 h-4 w-4 ${option.color === 'green' ? 'text-green-500' :
+                                      option.color === 'red' ? 'text-red-500' : 'text-yellow-500'
+                                    }`}
+                                  aria-hidden="true"
                                 />
                                 <span className="flex-1 text-left">{option.label}</span>
                                 {appointment.status === option.value && (
@@ -382,7 +377,7 @@ const Appointment = () => {
                         </div>
                       )}
                     </div>
-                
+
                   </div>
                 </div>
               </div>

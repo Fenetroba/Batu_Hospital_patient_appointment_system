@@ -122,8 +122,7 @@ export default function initSocket(server) {
     })
 
     socket.on('disconnect', (reason) => {
-      // handle cleanup if needed
-      // console.log(`socket disconnected: ${reason}`)
+
     })
   })
 

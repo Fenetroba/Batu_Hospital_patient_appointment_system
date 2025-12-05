@@ -32,6 +32,10 @@ const appointmentSchema = new mongoose.Schema({
     type: String,
     // enum:["General","Cardiology","Neurology","Pediatrics","Orthopedics","Dermatology"]
     required: true
+  },
+  patientInfoFile: {
+    type: String,
+    default: null
   }
 }, { timestamps: true });
 

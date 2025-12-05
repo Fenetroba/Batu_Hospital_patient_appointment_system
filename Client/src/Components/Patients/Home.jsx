@@ -4,6 +4,7 @@ import { fetchNotifications } from '@/Stores/notificationSlice';
 import { Bell } from 'lucide-react';
 import { Button } from '../ui/button';
 import MyAppointment from './MyAppointment';
+import Reports from './Reports';
 
 const PatientHome = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const PatientHome = () => {
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Patient Dashboard</h1>
 
       <div>
-        <Button className='float-right p-2 m-3'>My Medical Information</Button>
+        <Reports/>
       </div>
       {/* Notification Section */}
       <div className="mb-6">

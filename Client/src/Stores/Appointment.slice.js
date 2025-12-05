@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 
 const initialState = {
   appointments: [],
+  patientAppointments: [],
   loading: false,
   error: null,
   currentAppointment: null
@@ -18,14 +19,14 @@ export const fetchAppointments = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get('/appointment');
-      console.log('API Response:', response); // Log the full response
+   
       // Make sure we're returning an array of appointments
-      const appointments = Array.isArray(response.data) ? response.data : 
-                         (response.data.appointments || response.data.data || []);
-      console.log('Processed appointments:', appointments);
+      const appointments = Array.isArray(response.data) ? response.data :
+        (response.data.appointments || response.data.data || []);
+     
       return appointments;
     } catch (error) {
-      console.error('API Error:', error.response?.data || error.message);
+  
       return rejectWithValue({
         message: error.response?.data?.message || 'Failed to fetch appointments',
         status: error.response?.status,
@@ -98,6 +99,38 @@ export const fetchAppointmentById = createAsyncThunk(
   }
 );
 
+export const uploadPatientInfo = createAsyncThunk(
+  'appointments/uploadPatientInfo',
+  async ({ id, file }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `/appointment/${id}/patient-info`,
+        { file },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return response.data.appointment;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to upload file');
+    }
+  }
+);
+
+export const fetchPatientAppointments = createAsyncThunk(
+  'appointments/fetchPatientAppointments',
+  async (patientId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`/appointment/patient/${patientId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch patient appointments');
+    }
+  }
+);
+
 // Slice
 const appointmentSlice = createSlice({
   name: 'appointments',
@@ -121,13 +154,13 @@ const appointmentSlice = createSlice({
       state.error = null;
       // Ensure we're always setting an array
       state.appointments = Array.isArray(action.payload) ? action.payload : [];
-      console.log('Updated Redux state with appointments:', state.appointments);
+    
     });
     builder.addCase(fetchAppointments.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload?.message || 'Failed to fetch appointments';
       state.appointments = []; // Reset appointments on error
-      console.error('Fetch appointments failed:', action.payload);
+    
       toast.error(state.error);
     });
 
@@ -179,6 +212,21 @@ const appointmentSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(deleteAppointment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      toast.error(action.payload);
+    });
+
+    // Fetch Patient Appointments
+    builder.addCase(fetchPatientAppointments.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchPatientAppointments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.patientAppointments = action.payload;
+    });
+    builder.addCase(fetchPatientAppointments.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
       toast.error(action.payload);

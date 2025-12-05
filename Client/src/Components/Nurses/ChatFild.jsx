@@ -107,7 +107,7 @@ const ChatFild = ({ user }) => {
                             {m.sender?._id === currentUser.id && (
                                 m.status === 'read' ? <CheckCheck size={12} className="text-white" /> : <Check size={12} className="text-white" />
                             )}
-                            {console.log(m.status )}
+                    
                         </div>
                         {m.sender?._id === currentUser.id && (
                             <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">

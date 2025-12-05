@@ -13,7 +13,6 @@ import { fetchAppointments } from '@/Stores/Appointment.slice';
 
 const Appointment = () => {
   const { appointments = [], loading: appointmentsLoading } = useSelector(state => state.appointments || {})
-  console.log('Appointments from Redux:', appointments)
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -58,7 +57,6 @@ const Appointment = () => {
   // Handle editing an appointment
   const handleEditAppointment = (appointment) => {
     // Navigate to edit mode or open edit modal
-    console.log('Edit appointment:', appointment);
     // Example: navigate(`/nurses/appointments/edit/${appointment._id}`);
   };
 

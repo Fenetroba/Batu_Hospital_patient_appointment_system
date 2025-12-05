@@ -40,7 +40,6 @@ const items = [
 
 const DoctorsSidebar = () => {
   const [OpenFile, setOpenFile] = useState("");
-  console.log(OpenFile);
   return (
     <SidebarProvider>
       <Sidebar>

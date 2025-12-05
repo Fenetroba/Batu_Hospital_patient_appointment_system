@@ -136,7 +136,7 @@ const User = () => {
 
   const handleSelectUser = (user) => {
     // Handle user selection from search results
-    console.log('Selected user:', user)
+
     setShowFindModal(false)
   }
 

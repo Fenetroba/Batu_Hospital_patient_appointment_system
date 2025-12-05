@@ -1,3 +1,4 @@
+import cloudinary from '../Lib/Cloudinary.js';
 import Appointment from '../Model/Appointment.model.js';
 // Create a new appointment
 export const createAppointment = async (req, res) => {
@@ -159,5 +160,48 @@ export const getDoctorAppointments = async (req, res) => {
     } catch (error) {
         console.error('Error fetching doctor appointments:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+
+export const uploadPatientInfo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { file } = req.body; // Expecting base64 string
+
+        if (!file) {
+            return res.status(400).json({ message: 'No file provided' });
+        }
+
+        // Upload to Cloudinary
+        // Fix for "Stale request" error: Manually set timestamp to account for potential clock skew
+        // Adding 24 hours (86400 seconds) to current time to ensure we are not "too old"
+        const timestamp = Math.round((new Date().getTime() / 1000)) + 86400;
+
+        const result = await cloudinary.uploader.upload(file, {
+            folder: 'patient_info',
+            resource_type: 'auto',
+            timestamp: timestamp
+        });
+
+        const appointment = await Appointment.findByIdAndUpdate(
+            id,
+            { patientInfoFile: result.secure_url },
+            { new: true }
+        );
+
+        if (!appointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+
+        res.status(200).json({
+            message: 'File uploaded successfully',
+            appointment
+        });
+
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

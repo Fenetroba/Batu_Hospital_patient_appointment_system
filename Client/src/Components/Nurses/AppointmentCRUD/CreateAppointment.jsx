@@ -17,7 +17,6 @@ const CreateAppointment = () => {
 
   // Debug: Log the users from Redux
   useEffect(() => {
-    console.log('Users from Redux:', users);
   }, [users]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -49,11 +48,9 @@ const CreateAppointment = () => {
   // Load doctors and patients when component mounts or users change
   useEffect(() => {
     if (users && Array.isArray(users) && users.length > 0) {
-      console.log('Filtering doctors and patients from users:', users);
+    
       const doctorList = users.filter(user => user.role === 'Doctor');
       const patientList = users.filter(user => user.role === 'Patient');
-      console.log('Filtered doctors:', doctorList);
-      console.log('Filtered patients:', patientList);
       setDoctors(doctorList);
       setPatients(patientList);
 
@@ -78,27 +75,15 @@ const CreateAppointment = () => {
       const docDept = doctor.department.toString().trim().toLowerCase();
       const selectedDept = form.department.toString().trim().toLowerCase();
 
-      console.log('Comparing doctor department:', {
-        doctorName: doctor.fullName,
-        doctorDept: doctor.department,
-        formDept: form.department,
-        match: docDept === selectedDept
-      });
-
+   
       return docDept === selectedDept;
     });
 
-    console.log('Doctors for department', form.department, ':', filtered);
-    console.log('All available doctors:', doctors);
+  
     return filtered;
   };
 
-  // Debug: Log the current state
-  useEffect(() => {
-    console.log('Current form state:', form);
-    console.log('Available doctors:', doctors);
-    console.log('Filtered doctors:', getDoctorsForDepartment());
-  }, [form.department, doctors]);
+
 
   useEffect(() => {
     if (location.state) {
@@ -309,11 +294,10 @@ const CreateAppointment = () => {
       <div>
         <label className="block text-sm font-medium text-gray-200 mb-1">Medical Document (Optional)</label>
         <input
-          type="text"
+          type="file"
           name="medicalDocument"
           value={form.medicalDocument}
           onChange={change}
-          placeholder="Medical document ID/URL"
           className="w-full bg-[var(--five)] border border-gray-300 rounded px-3 py-2 text-gray-100 outline-none"
         />
       </div>

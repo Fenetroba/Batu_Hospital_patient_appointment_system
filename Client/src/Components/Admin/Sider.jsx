@@ -51,7 +51,6 @@ const items = [
 
 const AdminSidebar = () => {
   const [OpenFile, setOpenFile] = useState("");
-  console.log(OpenFile);
   return (
     <SidebarProvider>
       <Sidebar>

@@ -10,7 +10,6 @@ const AdminHome = () => {
   const { currentUser } = useSelector((state) => state.auth);
 
   const { appointments } = useSelector((state) => state.appointments);
-  console.log(appointments);
   const stats = [
     {
       title: "Total Users",
