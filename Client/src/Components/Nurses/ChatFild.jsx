@@ -1,22 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMessagesBetweenUsers, sendMessage, addLocalMessage, markMessagesRead, updateLocalMessage } from '@/Stores/messageSlice'
-import { io } from 'socket.io-client'
 import { Check, CheckCheck, X } from 'lucide-react'
 import MessageOptions from '../Common/MessageOptions'
 import { handleDelete, handleEdit, submitEdit } from '@/Lib/MessageActions'
 
-// Singleton socket connection
-let socket
-const getSocket = (token) => {
-    if (!socket) {
-        socket = io('http://localhost:5000', {
-            auth: { token },
-            withCredentials: true
-        })
-    }
-    return socket
-}
+import { getSocket } from '../../Lib/Socket'
+
 
 const ChatFild = ({ user }) => {
     const dispatch = useDispatch()

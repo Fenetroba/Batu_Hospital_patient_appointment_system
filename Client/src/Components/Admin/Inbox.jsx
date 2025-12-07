@@ -3,20 +3,10 @@ import { Mail, User } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers } from '@/Stores/UserSlice'
 import { incrementUnreadCount, clearUnreadCount } from '@/Stores/messageSlice'
-import { io } from 'socket.io-client'
+import { getSocket } from '../../Lib/Socket'
 import Chatfield from './Chatfield'
 
-// Singleton socket connection
-let socket
-const getSocket = (token) => {
-  if (!socket) {
-    socket = io('http://localhost:5000/api', {
-      auth: { token },
-      withCredentials: true
-    })
-  }
-  return socket
-}
+
 
 const Inbox = () => {
   const dispatch = useDispatch()
@@ -53,7 +43,7 @@ const Inbox = () => {
 
   const patients = useMemo(() => {
     // Filter to show Patients (Receptionists mainly chat with patients)
-      return (users || []).filter(u => u.role !== 'Admin' && u.role !== 'Patient')
+    return (users || []).filter(u => u.role !== 'Admin' && u.role !== 'Patient')
   }, [users])
 
   const filtered = useMemo(() => {
@@ -137,9 +127,8 @@ const Inbox = () => {
 }
 
 export default Inbox
-  
 
 
- 
 
- 
+
+
